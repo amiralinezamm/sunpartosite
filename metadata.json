@@ -1,0 +1,6 @@
+{
+  "name": "هور پرتو انرژی",
+  "description": "وبسایت رسمی شرکت سان پرتو انرژی - طراحی، تامین تجهیزات و اجرای تخصصی سیستم‌های برق خورشیدی (فتوولتائیک) تحت مدیریت مهندس قاسم نظام الشعرایی",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
