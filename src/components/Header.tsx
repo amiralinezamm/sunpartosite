@@ -95,7 +95,7 @@ export const Header: React.FC = () => {
             <BrandLogo 
               variant="horizontal" 
               weight="light" 
-              markClassName="w-8 h-8 sm:w-9 sm:h-9 text-[#F2B134] group-hover:scale-105 transition-transform"
+              markClassName="h-9 sm:h-10 w-auto group-hover:scale-105 transition-transform"
               textClassName="text-white"
             />
           </a>
