@@ -174,11 +174,10 @@ export const ApplicationsSection: React.FC = () => {
               <div className="relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-xs group aspect-[4/3] sm:aspect-[16/10] lg:aspect-square bg-slate-100">
                 <img
                   src={activeCategory.image}
-                  alt={`سیستم برق خورشیدی ${activeCategory.title} اجرا شده توسط شرکت ${COMPANY_INFO.name}`}
+                  alt={`تصویر شماتیک سیستم برق خورشیدی ${activeCategory.title}`}
                   width="800"
                   height="600"
                   loading="lazy"
-                  referrerPolicy="no-referrer"
                   className="w-full h-full object-cover object-center group-hover:scale-103 transition-transform duration-500"
                 />
                 <div className="absolute bottom-3 right-3 left-3 p-3 rounded-xl bg-white/90 backdrop-blur-md border border-slate-200 text-right shadow-xs">
