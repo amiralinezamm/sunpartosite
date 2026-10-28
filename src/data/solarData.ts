@@ -105,7 +105,7 @@ export const APPLICATION_CATEGORIES: ApplicationCategory[] = [
     ],
     idealFor: 'واحدهای آپارتمانی، منازل شهری و برج‌های مسکونی',
     savingsInsight: 'جلوگیری از توقف تجهیزات حساس، خاموشی پکیج و فاسد شدن مواد غذایی در خاموشی‌های شهری',
-    image: '/images/app-residential.svg',
+    image: '/images/app-residential.webp',
   },
   {
     id: 'villa',
@@ -122,7 +122,7 @@ export const APPLICATION_CATEGORIES: ApplicationCategory[] = [
     ],
     idealFor: 'باغ‌ها، ویلاها، زمین‌های کشاورزی بدون انشعاب برق، اقامتگاه‌های بوم‌گردی',
     savingsInsight: 'حذف هزینه‌های میلیونی خرید انشعاب اختصاصی و هزینه‌های ماهانه سوخت و تعمیر موتوربرق',
-    image: '/images/app-villa.svg',
+    image: '/images/app-villa.webp',
   },
   {
     id: 'commercial',
@@ -139,7 +139,7 @@ export const APPLICATION_CATEGORIES: ApplicationCategory[] = [
     ],
     idealFor: 'شرکت‌ها، کلینیک‌های پزشکی، دفاتر مهندسی، شعب بانکی و پاساژها',
     savingsInsight: 'جلوگیری از توقف فرآیندهای مالی و کاری با هزینه استهلاک بسیار پایین‌تر از دیزل ژنراتور',
-    image: '/images/app-commercial.svg',
+    image: '/images/app-commercial.webp',
   },
   {
     id: 'industrial',
@@ -156,7 +156,7 @@ export const APPLICATION_CATEGORIES: ApplicationCategory[] = [
     ],
     idealFor: 'شهرک‌های صنعتی، صنایع سنگین و سبک، سردخانه‌ها و انبارها',
     savingsInsight: 'تامین پایدار انرژی خطوط تولید صنعتی و حذف خسارات ناشی از توقف دستگاه‌ها',
-    image: '/images/app-industrial.svg',
+    image: '/images/app-industrial.webp',
   },
 ];
 
@@ -232,7 +232,7 @@ export const PROJECTS: Project[] = [
     location: 'منطقه دماوند، هشت بهشت',
     annualGeneration: '۱۷,۵۰۰ کیلووات ساعت در سال',
     description: 'تامین کامل و ۲۴ ساعته برق ویلای لوکس با سیستم ذخیره‌ساز لیتیومی، راه‌اندازی همزمان پمپ استخر، ۳ دستگاه اسپلیت، یخچال، روشنایی کامل و سیستم‌های امنیتی هوشمند بدون نیاز به برق شبکه.',
-    image: '/images/proj-villa-pool.svg',
+    image: '/images/proj-villa-pool.webp',
     specs: {
       panelType: '۱۸ عدد پنل ۵۵۰ وات مونوکریستال',
       inverterType: 'اینورتر ۱۰ کیلووات تمام‌سینوسی Growatt',
@@ -251,7 +251,7 @@ export const PROJECTS: Project[] = [
     location: 'دماوند، شهرک ویلایی آبسرد',
     annualGeneration: '۸,۷۰۰ کیلووات ساعت در سال',
     description: 'طراحی و نصب سیستم خورشیدی مستقل برای ویلای دوطبقه شامل روشنایی، تلویزیون، یخچال ساید، پمپ آب و دوربین‌های مداربسته متصل به اینترنت.',
-    image: '/images/proj-villa-snow.svg',
+    image: '/images/proj-villa-snow.webp',
     specs: {
       panelType: '۱۰ عدد پنل ۵۴۰ وات مونوکریستال',
       inverterType: 'اینورتر تمام‌سینوسی ۵ کیلوواتی MPPT',
@@ -270,7 +270,7 @@ export const PROJECTS: Project[] = [
     location: 'تهران، منطقه ولنجک',
     annualGeneration: 'تغذیه مداوم آسانسورها و مدارات حیاتی',
     description: 'تامین برق اضطراری هوشمند برای مشاعات مجتمع شامل آسانسورها، پمپ‌های آب آبرسانی و روشنایی، با شارژ هوشمند باتری‌های لیتیومی در زمان وصل برق شبکه.',
-    image: '/images/proj-complex.svg',
+    image: '/images/proj-complex.webp',
     specs: {
       panelType: 'امکان کارکرد با و بدون پنل خورشیدی',
       inverterType: 'اینورتر سه فاز ۲۰ کیلووات هوشمند',
@@ -289,7 +289,7 @@ export const PROJECTS: Project[] = [
     location: 'شهرک صنعتی دماوند',
     annualGeneration: '۱۶۵,۰۰۰ کیلووات ساعت در سال',
     description: 'اجرای نیروگاه سقف سوله‌ای بر روی سازه صنعتی جهت تامین برق پایدار خطوط تولید در تابستان و پاسخگویی به الزامات ماده ۱۶ قانون جهش تولید.',
-    image: '/images/proj-hall.svg',
+    image: '/images/proj-hall.webp',
     specs: {
       panelType: '۱۸۰ عدد پنل ۵۵۵ وات مونوکریستال',
       inverterType: '۲ دستگاه اینورتر ۵۰ کیلووات سه فاز صنعتی',
@@ -308,7 +308,7 @@ export const PROJECTS: Project[] = [
     location: 'باغات فیروزکوه / جابان',
     annualGeneration: 'آبیاری روزانه ۸ ساعت بدون نیاز به سوخت',
     description: 'راه‌اندازی پمپ شناور آب عمیق با اینورتر تخصصی درایو خورشیدی VFD، استخراج روزانه ده‌ها هزار لیتر آب برای آبیاری قطره‌ای باغات سیب و گردو.',
-    image: '/images/proj-farm.svg',
+    image: '/images/proj-farm.webp',
     specs: {
       panelType: '۱۲ عدد پنل خورشیدی ۶۰۰ وات',
       inverterType: 'اینورتر درایو فرکانس متغیر VFD مخصوص پمپ خورشیدی',
@@ -327,7 +327,7 @@ export const PROJECTS: Project[] = [
     location: 'منطقه پلور / لاریجان',
     annualGeneration: '۵,۲۰۰ کیلووات ساعت در سال',
     description: 'تامین برق پایدار برای ۶ کلبه کوهستانی شامل روشنایی LED، شارژ گوشی مسافران، یخچال و سیستم گرمایشی هوشمند با باتری لیتیومی.',
-    image: '/images/proj-cabin.svg',
+    image: '/images/proj-cabin.webp',
     specs: {
       panelType: '۶ عدد پنل ۵۰۰ وات مونوکریستال',
       inverterType: 'اینورتر سینوسی ۳۰۰۰ وات هوشمند All-in-One',

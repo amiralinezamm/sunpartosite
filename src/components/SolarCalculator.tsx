@@ -5,6 +5,7 @@ import {
   Server, Cpu, Factory, Wrench
 } from 'lucide-react';
 import { COMPANY_INFO } from '../data/solarData';
+import { MascotCallout } from './MascotCallout';
 
 type PropertyCategory = 'residential-villa' | 'office-commercial' | 'industrial-warehouse';
 
@@ -385,6 +386,13 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
             نوع ملک را مشخص کنید تا وسایل و تجهیزات برقی اختصاصی همان کاربری ظاهر شوند و برآورد فنی دقیق برای شما انجام شود:
           </p>
         </div>
+
+        <MascotCallout
+          pose="calculator"
+          className="-mt-6 mb-8"
+          title="در کمتر از یک دقیقه، برآورد سیستم خود را ببینید"
+          text="نوع ملک و وسایل برقی را انتخاب کنید؛ ظرفیت سیستم، تعداد پنل و تجهیزات پیشنهادی همان لحظه محاسبه می‌شود."
+        />
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           

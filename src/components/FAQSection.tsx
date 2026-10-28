@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { HelpCircle, ChevronDown, MessageCircle, Phone } from 'lucide-react';
 import { FAQS, COMPANY_INFO } from '../data/solarData';
 import siteContent from '../../content/site';
+import { MascotCallout } from './MascotCallout';
 
 // Placeholder items (awaiting client copy, see CONTENT-TODO.md) stay out of the page
 const VISIBLE_FAQS = FAQS.filter((faq) => !faq.question.includes('PLACEHOLDER'));
@@ -101,35 +102,32 @@ export const FAQSection: React.FC = () => {
           })}
         </div>
 
-        {/* Unanswered Questions CTA Box */}
-        <div className="mt-12 p-6 rounded-2xl bg-slate-50 border border-slate-200/90 text-center space-y-4 shadow-xs">
-          <h3 className="text-sm sm:text-base font-bold text-slate-950">
-            سوال دیگری دارید که در لیست بالا نبود؟
-          </h3>
-          <p className="text-xs text-slate-600 max-w-lg mx-auto font-normal">
-            {siteContent.about.ceoName} و کارشناسان فنی {siteContent.company.nameFa} آماده پاسخگویی و ارائه مشاوره اختصاصی به شما هستند.
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-            <a
-              href={COMPANY_INFO.whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-all"
-              title="ارسال سوال در واتساپ"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span>پرسش مستقیم در واتساپ</span>
-            </a>
-            <a
-              href={`tel:${COMPANY_INFO.phone}`}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 text-xs sm:text-sm border border-slate-200 font-semibold"
-              title={`تماس با شرکت ${siteContent.company.nameFa}`}
-            >
-              <Phone className="w-4 h-4 text-amber-600" />
-              <span>تماس تلفنی: {COMPANY_INFO.phoneDisplay}</span>
-            </a>
-          </div>
-        </div>
+        {/* Unanswered Questions CTA with mascot */}
+        <MascotCallout
+          pose="faq"
+          className="mt-6"
+          title="سوال دیگری دارید که در لیست بالا نبود؟"
+          text={`${siteContent.about.ceoName} و کارشناسان فنی ${siteContent.company.nameFa} آماده پاسخگویی و ارائه مشاوره اختصاصی به شما هستند.`}
+        >
+          <a
+            href={COMPANY_INFO.whatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm shadow-xs transition-all"
+            title="ارسال سوال در واتساپ"
+          >
+            <MessageCircle className="w-4 h-4" />
+            <span>پرسش مستقیم در واتساپ</span>
+          </a>
+          <a
+            href={`tel:${COMPANY_INFO.phone}`}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm border border-white/20 font-semibold"
+            title={`تماس با شرکت ${siteContent.company.nameFa}`}
+          >
+            <Phone className="w-4 h-4 text-amber-400" />
+            <span>تماس تلفنی: {COMPANY_INFO.phoneDisplay}</span>
+          </a>
+        </MascotCallout>
 
       </div>
     </section>

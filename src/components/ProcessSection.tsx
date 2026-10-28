@@ -1,6 +1,7 @@
 import React from 'react';
 import { PhoneCall, Compass, FileSpreadsheet, HardHat, CheckCircle2, ArrowLeft, Shield } from 'lucide-react';
 import { WORK_STEPS, COMPANY_INFO } from '../data/solarData';
+import { MascotCallout } from './MascotCallout';
 
 export const ProcessSection: React.FC = () => {
   const getIcon = (iconName: string) => {
@@ -76,8 +77,13 @@ export const ProcessSection: React.FC = () => {
           ))}
         </div>
 
-        {/* Bottom CTA bar */}
-        <div className="mt-12 text-center">
+        {/* Bottom CTA with installer mascot */}
+        <MascotCallout
+          pose="installer"
+          className="mt-6"
+          title="نصب استاندارد، توسط تیم فنی خود ما"
+          text="اجرای سازه، سیم‌کشی و راه‌اندازی سیستم را تیم فنی سان پرتو با تجهیزات اورجینال و طبق استاندارد انجام می‌دهد."
+        >
           <a
             href={COMPANY_INFO.whatsappUrl}
             target="_blank"
@@ -87,7 +93,7 @@ export const ProcessSection: React.FC = () => {
             <span>شروع گام اول: درخواست مشاوره و امکان‌سنجی رایگان</span>
             <ArrowLeft className="w-4 h-4" />
           </a>
-        </div>
+        </MascotCallout>
 
       </div>
     </section>

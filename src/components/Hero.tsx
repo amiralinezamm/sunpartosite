@@ -135,16 +135,20 @@ export const Hero: React.FC = () => {
                 {/* Radial golden glow effect */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(242,177,52,0.18)_0%,_transparent_70%)] pointer-events-none" />
                 
-                {/* Official Mascot Astronaut holding Solar Panel */}
-                <img
-                  src="/mascot.webp"
-                  alt="تکنسین متخصص و مسکات رسمی شرکت سان پرتو انرژی"
-                  width="800"
-                  height="883"
-                  loading="eager"
-                  fetchPriority="high"
-                  className="w-full h-full object-contain p-4 sm:p-6 drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)] group-hover:scale-104 transition-transform duration-500 relative z-10"
+                {/* Official mascot on a solar rooftop (muted looping clip, poster shows before play) */}
+                <video
+                  src="/video/hero-mascot.mp4"
+                  poster="/video/hero-mascot-poster.webp"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  aria-label="مسکات رسمی سان پرتو انرژی روی پشت‌بام مجهز به پنل خورشیدی"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
+                {/* Bottom fade so the floating badges stay readable */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A1326]/50 via-transparent to-[#0A1326]/30 pointer-events-none" />
                 
                 {/* Floating Top Tag */}
                 <div className="absolute top-3 right-3 px-3 py-1.5 rounded-lg bg-white/95 backdrop-blur-md border border-slate-200 text-xs font-semibold text-slate-800 flex items-center gap-1.5 shadow-sm z-20">

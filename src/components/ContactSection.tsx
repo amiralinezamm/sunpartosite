@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Phone, MessageCircle, MapPin, Clock, Send, UserCheck, CheckCircle2, Navigation } from 'lucide-react';
 import { COMPANY_INFO } from '../data/solarData';
 import siteContent from '../../content/site';
+import { MascotCallout } from './MascotCallout';
 
 const PROPERTY_TYPES = [
   'ویلای بدون برق (Off-Grid)',
@@ -76,6 +77,13 @@ export const ContactSection: React.FC = () => {
             برای برآورد رایگان سیستم، دریافت پیش‌فاکتور، خرید تجهیزات خورشیدی و هماهنگی بازدید در مناطق {siteContent.serviceAreas.join('، ')} با ما در ارتباط باشید:
           </p>
         </div>
+
+        <MascotCallout
+          pose="support"
+          className="-mt-6 mb-8"
+          title="پشتیبانی سان پرتو، همیشه در دسترس"
+          text="از اولین سوال تا سال‌ها بعد از نصب، کارشناسان ما برای مشاوره، عیب‌یابی و سرویس دوره‌ای کنار شما هستند."
+        />
 
         {/* 2-Column Grid: Contact Info (5 cols) & Consultation Form + Map (7 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
