@@ -3,10 +3,18 @@ import React from 'react';
 export type MascotPose = 'support' | 'calculator' | 'faq' | 'installer';
 
 const MASCOT_ALT: Record<MascotPose, string> = {
-  support: 'مسکات سان پرتو در نقش کارشناس پشتیبانی',
+  support: 'مسکات سان پرتو با هدست پشت میز پشتیبانی',
   calculator: 'مسکات سان پرتو با تبلت محاسبه صرفه‌جویی انرژی',
   faq: 'مسکات سان پرتو در حال پاسخ به سوالات',
-  installer: 'مسکات سان پرتو در حال نصب سازه پنل خورشیدی',
+  installer: 'مسکات سان پرتو با دریل، آماده نصب سیستم خورشیدی',
+};
+
+// Image width per pose; the desk scene is wider than the standing poses
+const MASCOT_SIZE: Record<MascotPose, { className: string; width: number; height: number }> = {
+  support: { className: 'w-36 sm:w-56', width: 641, height: 700 },
+  calculator: { className: 'w-24 sm:w-32', width: 500, height: 900 },
+  faq: { className: 'w-24 sm:w-32', width: 500, height: 900 },
+  installer: { className: 'w-24 sm:w-32', width: 502, height: 900 },
 };
 
 interface MascotCalloutProps {
@@ -30,11 +38,11 @@ export const MascotCallout: React.FC<MascotCalloutProps> = ({ pose, title, text,
         <img
           src={`/mascot/${pose}.webp`}
           alt={MASCOT_ALT[pose]}
-          width="500"
-          height="900"
+          width={MASCOT_SIZE[pose].width}
+          height={MASCOT_SIZE[pose].height}
           loading="lazy"
           decoding="async"
-          className="w-24 sm:w-32 shrink-0 -mt-16 sm:-mt-24 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]"
+          className={`${MASCOT_SIZE[pose].className} shrink-0 -mt-16 sm:-mt-24 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]`}
         />
         <div className="flex-1 self-center py-5 sm:py-7 space-y-3">
           <h3 className="text-sm sm:text-lg font-bold text-white">{title}</h3>
