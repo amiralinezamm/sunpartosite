@@ -16,7 +16,7 @@ import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-white text-slate-900 selection:bg-amber-400 selection:text-slate-950 font-['Vazirmatn',sans-serif]">
+    <div className="min-h-screen bg-white text-slate-900 selection:bg-amber-400 selection:text-slate-950 font-['Diodrum_Arabic',Tahoma,sans-serif]">
       {/* Sticky Header */}
       <Header />
 
