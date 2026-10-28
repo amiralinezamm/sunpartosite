@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { MapPin, Zap, Eye, Calendar, ArrowLeft, Filter, Sparkles } from 'lucide-react';
 import { PROJECTS, COMPANY_INFO } from '../data/solarData';
 import { Project } from '../types';
@@ -8,12 +8,14 @@ import siteContent from '../../content/site';
 export const PortfolioSection: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const closeModal = useCallback(() => setSelectedProject(null), []);
 
   const categories = [
     { id: 'all', label: 'همه پروژه‌ها' },
-    { id: 'offgrid-villa', label: 'ویلایی مستقل (آفگرید)' },
-    { id: 'residential', label: 'مسکونی و اداری' },
-    { id: 'industrial', label: 'صنعتی و متصل به شبکه' },
+    { id: 'villa', label: 'ویلایی و اقامتی (آفگرید)' },
+    { id: 'residential', label: 'مسکونی و برق اضطراری' },
+    { id: 'industrial', label: 'صنعتی و کارخانه‌ای' },
+    { id: 'agriculture', label: 'کشاورزی و پمپ آب' },
   ];
 
   const filteredProjects = activeCategory === 'all'
@@ -48,6 +50,7 @@ export const PortfolioSection: React.FC = () => {
             <button
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
+              aria-pressed={activeCategory === cat.id}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 activeCategory === cat.id
                   ? 'bg-slate-950 text-white shadow-xs'
@@ -174,7 +177,7 @@ export const PortfolioSection: React.FC = () => {
       {/* Project Technical Modal */}
       <ProjectModal
         project={selectedProject}
-        onClose={() => setSelectedProject(null)}
+        onClose={closeModal}
       />
     </section>
   );

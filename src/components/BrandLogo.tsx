@@ -95,7 +95,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         {logoMark}
         <div className={`flex flex-col items-center ${textClassName}`}>
           {logotypeLight}
-          <span className="font-semibold text-[10px] tracking-wider opacity-85 mt-0.5">SunParto Energy</span>
+          <span className="font-semibold text-[11px] tracking-wider opacity-85 mt-0.5">SunParto Energy</span>
         </div>
       </div>
     );

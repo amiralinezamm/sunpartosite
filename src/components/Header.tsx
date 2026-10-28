@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Phone, MessageCircle, Menu, X, MapPin, Clock, Award } from 'lucide-react';
 import { COMPANY_INFO } from '../data/solarData';
 import { BrandLogo } from './BrandLogo';
+import { scrollToSection } from '../utils/scroll';
 
 export const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -16,7 +17,6 @@ export const Header: React.FC = () => {
   }, []);
 
   const navLinks = [
-    { label: 'صفحه اصلی', href: '#hero' },
     { label: 'درباره ما', href: '#about' },
     { label: 'کاربردها', href: '#applications' },
     { label: 'خدمات', href: '#services' },
@@ -30,16 +30,7 @@ export const Header: React.FC = () => {
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setIsMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      const headerOffset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
+    scrollToSection(href);
   };
 
   return (

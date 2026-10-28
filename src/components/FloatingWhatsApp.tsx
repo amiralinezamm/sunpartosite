@@ -1,9 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MessageCircle, Phone, X, Sun } from 'lucide-react';
 import { COMPANY_INFO } from '../data/solarData';
 
 export const FloatingWhatsApp: React.FC = () => {
-  const [isTooltipOpen, setIsTooltipOpen] = useState(true);
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
+  // Show the hint once per visit, after a short delay, unless the visitor already closed it
+  useEffect(() => {
+    let dismissed = false;
+    try {
+      dismissed = sessionStorage.getItem('sp-wa-hint-dismissed') === '1';
+    } catch {
+      // storage unavailable (private mode etc.)
+    }
+    if (dismissed) return;
+    const timer = window.setTimeout(() => setIsTooltipOpen(true), 8000);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const closeTooltip = () => {
+    setIsTooltipOpen(false);
+    try {
+      sessionStorage.setItem('sp-wa-hint-dismissed', '1');
+    } catch {
+      // ignore
+    }
+  };
 
   return (
     <div className="fixed bottom-6 left-6 z-50 flex flex-col items-start gap-3" dir="ltr">
@@ -12,10 +34,10 @@ export const FloatingWhatsApp: React.FC = () => {
       {isTooltipOpen && (
         <div 
           dir="rtl"
-          className="bg-slate-900 text-white p-3.5 rounded-2xl shadow-2xl border border-slate-800 text-right max-w-[240px] animate-in fade-in slide-in-from-bottom-2 duration-300 relative group"
+          className="hidden sm:block bg-slate-900 text-white p-3.5 rounded-2xl shadow-2xl border border-slate-800 text-right max-w-[240px] animate-in fade-in slide-in-from-bottom-2 duration-300 relative group"
         >
           <button
-            onClick={() => setIsTooltipOpen(false)}
+            onClick={closeTooltip}
             className="absolute top-2.5 left-2.5 text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800 transition-colors"
             aria-label="بستن پیام"
           >
@@ -34,7 +56,7 @@ export const FloatingWhatsApp: React.FC = () => {
           <div className="mt-2.5 pt-2 border-t border-slate-800 flex items-center justify-between">
             <a
               href={`tel:${COMPANY_INFO.phone}`}
-              className="text-[10px] text-slate-400 hover:text-amber-400 flex items-center gap-1 font-mono"
+              className="text-[11px] text-slate-400 hover:text-amber-400 flex items-center gap-1 font-mono"
             >
               <Phone className="w-3 h-3 text-amber-400" />
               <span>{COMPANY_INFO.phoneDisplay}</span>

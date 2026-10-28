@@ -22,6 +22,18 @@ export const ApplicationsSection: React.FC = () => {
 
   const activeCategory = APPLICATION_CATEGORIES.find(c => c.id === selectedApp) || APPLICATION_CATEGORIES[0];
 
+  // Arrow-key navigation between tabs (RTL: left arrow moves to the next tab)
+  const handleTabKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const step = e.key === 'ArrowLeft' ? 1 : e.key === 'ArrowRight' ? -1 : 0;
+    if (!step) return;
+    e.preventDefault();
+    const count = APPLICATION_CATEGORIES.length;
+    const current = APPLICATION_CATEGORIES.findIndex(c => c.id === selectedApp);
+    const next = APPLICATION_CATEGORIES[(current + step + count) % count];
+    setSelectedApp(next.id);
+    document.getElementById(`tab-${next.id}`)?.focus();
+  };
+
   return (
     <section 
       id="applications" 
@@ -46,7 +58,7 @@ export const ApplicationsSection: React.FC = () => {
         </div>
 
         {/* 4 Application Selector Tabs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8" role="tablist" aria-label="دسته‌بندی کاربری‌های سیستم‌های خورشیدی">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8" role="tablist" aria-label="دسته‌بندی کاربری‌های سیستم‌های خورشیدی" onKeyDown={handleTabKeyDown}>
           {APPLICATION_CATEGORIES.map((cat) => {
             const isSelected = selectedApp === cat.id;
             return (
@@ -54,6 +66,7 @@ export const ApplicationsSection: React.FC = () => {
                 key={cat.id}
                 role="tab"
                 aria-selected={isSelected}
+                tabIndex={isSelected ? 0 : -1}
                 aria-controls={`tabpanel-${cat.id}`}
                 id={`tab-${cat.id}`}
                 onClick={() => setSelectedApp(cat.id)}
@@ -69,9 +82,9 @@ export const ApplicationsSection: React.FC = () => {
                   {getIcon(cat.icon)}
                 </div>
                 <div>
-                  <h3 className={`text-sm sm:text-base font-bold ${isSelected ? 'text-slate-950' : 'text-slate-900'}`}>
+                  <span className={`block text-sm sm:text-base font-bold ${isSelected ? 'text-slate-950' : 'text-slate-900'}`}>
                     {cat.title}
-                  </h3>
+                  </span>
                   <p className={`text-[11px] mt-0.5 line-clamp-1 ${isSelected ? 'text-slate-900 font-medium' : 'text-slate-500'}`}>
                     {cat.tagline}
                   </p>

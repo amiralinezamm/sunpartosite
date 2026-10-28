@@ -71,7 +71,7 @@ export const BenefitsSection: React.FC = () => {
               <Leaf className="w-5 h-5" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-950">کاهش بیش از ۵۰ تن گاز دی‌اکسید کربن در سال با هر نیروگاه خورشیدی</h4>
+              <h3 className="text-sm font-bold text-slate-950">هر ۱ کیلووات پنل خورشیدی، سالانه حدود ۱ تن انتشار دی‌اکسید کربن را کاهش می‌دهد</h3>
               <p className="text-xs text-slate-600">کمک به حفظ باغات، هوای پاک و محیط زیست کم‌نظیر دماوند و فیروزکوه</p>
             </div>
           </div>

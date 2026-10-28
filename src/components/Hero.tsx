@@ -2,34 +2,17 @@ import React from 'react';
 import { MessageCircle, ArrowDown, ShieldCheck, Sun, CheckCircle2, Award, Zap, Sparkles, Check } from 'lucide-react';
 import { COMPANY_INFO, TRUST_METRICS } from '../data/solarData';
 import siteContent from '../../content/site';
+import { scrollToSection } from '../utils/scroll';
 
 export const Hero: React.FC = () => {
   const scrollToPortfolio = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const element = document.querySelector('#portfolio');
-    if (element) {
-      const headerOffset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
+    scrollToSection('#portfolio');
   };
 
   const scrollToCalculator = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const element = document.querySelector('#calculator');
-    if (element) {
-      const headerOffset = 80;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: 'smooth'
-      });
-    }
+    scrollToSection('#calculator');
   };
 
   return (
@@ -97,10 +80,10 @@ export const Hero: React.FC = () => {
                 onClick={scrollToCalculator}
                 className="inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 hover:from-amber-300 hover:via-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm sm:text-base shadow-md hover:shadow-lg shadow-amber-500/30 hover:scale-103 active:scale-100 transition-all cursor-pointer ring-2 ring-amber-300/70"
                 id="hero-calculator-shortcut"
-                title="ابزار هوشمند محاسبه‌گر تعداد پنل خورشیدی و استعلام آنلاین"
+                title="ابزار محاسبه ظرفیت، تعداد پنل و باتری سیستم خورشیدی"
               >
                 <Sparkles className="w-4 h-4 text-slate-950 animate-pulse" />
-                <span>محاسبه‌گر آنلاین ظرفیت و استعلام</span>
+                <span>محاسبه‌گر آنلاین ظرفیت سیستم</span>
               </button>
 
               <a
@@ -154,11 +137,12 @@ export const Hero: React.FC = () => {
                 
                 {/* Official Mascot Astronaut holding Solar Panel */}
                 <img
-                  src="/mascot.png"
+                  src="/mascot.webp"
                   alt="تکنسین متخصص و مسکات رسمی شرکت سان پرتو انرژی"
-                  width="720"
-                  height="720"
+                  width="800"
+                  height="883"
                   loading="eager"
+                  fetchPriority="high"
                   className="w-full h-full object-contain p-4 sm:p-6 drop-shadow-[0_15px_30px_rgba(0,0,0,0.6)] group-hover:scale-104 transition-transform duration-500 relative z-10"
                 />
                 
@@ -220,7 +204,7 @@ export const Hero: React.FC = () => {
                     ) : (
                       <div className="flex items-baseline gap-1.5 mb-1">
                         <span className="text-2xl sm:text-3xl md:text-4xl font-black text-amber-600 tracking-tight font-sans">
-                          {metric.value}
+                          {Number(metric.value).toLocaleString('fa-IR')}
                         </span>
                         <span className="text-xs sm:text-sm font-bold text-slate-700">
                           {metric.suffix}
@@ -229,9 +213,9 @@ export const Hero: React.FC = () => {
                     )}
                   </div>
                   <div>
-                    <h3 className="text-xs sm:text-sm font-bold text-slate-900 mb-1">
+                    <div className="text-xs sm:text-sm font-bold text-slate-900 mb-1">
                       {metric.title}
-                    </h3>
+                    </div>
                     <p className="text-[11px] sm:text-xs text-slate-500 leading-snug">
                       {metric.subtitle}
                     </p>

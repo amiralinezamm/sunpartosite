@@ -1,20 +1,24 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# سان پرتو انرژی — وب‌سایت رسمی
 
-# Run and deploy your AI Studio app
+وب‌سایت تک‌صفحه‌ای شرکت سان پرتو انرژی (SunParto Energy) — طراحی، تامین تجهیزات و اجرای سیستم‌های برق خورشیدی.
+ساخته‌شده با React، Vite و Tailwind CSS.
 
-This contains everything you need to run your app locally.
+## اجرا
 
-View your app in AI Studio: https://ai.studio/apps/1180c19f-6588-44be-bff6-1e4531eee658
+```bash
+npm install
+npm run dev      # سرور توسعه روی پورت 3000
+npm run build    # خروجی نهایی در dist/ (صفحه به‌صورت prerender ساخته می‌شود)
+npm run preview  # پیش‌نمایش خروجی نهایی
+npm run lint     # بررسی TypeScript
+```
 
-## Run Locally
+## ساختار
 
-**Prerequisites:**  Node.js
+- `src/data/solarData.ts` — **تنها منبع داده‌ها** (اطلاعات شرکت، خدمات، پروژه‌ها، سوالات متداول، نظرات مشتریان)
+- `content/site.ts` — نمای ساده‌ای از همان داده‌ها برای کامپوننت‌ها (این فایل را ویرایش نکنید)
+- `src/components/` — بخش‌های صفحه
+- `scripts/prerender.mjs` — در زمان build، HTML کامل صفحه را داخل `dist/index.html` قرار می‌دهد تا موتورهای جستجو بدون اجرای جاوااسکریپت محتوا را ببینند
+- `public/` — لوگوها، آیکون‌ها، تصویر اشتراک‌گذاری (`og-image.png`)، `robots.txt` و `sitemap.xml`
 
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+موارد محتوایی باقی‌مانده در `CONTENT-TODO.md` ثبت شده‌اند.

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { HelpCircle, ChevronDown, MessageCircle, Phone, AlertCircle } from 'lucide-react';
+import { HelpCircle, ChevronDown, MessageCircle, Phone } from 'lucide-react';
 import { FAQS, COMPANY_INFO } from '../data/solarData';
 import siteContent from '../../content/site';
 
+// Placeholder items (awaiting client copy, see CONTENT-TODO.md) stay out of the page
+const VISIBLE_FAQS = FAQS.filter((faq) => !faq.question.includes('PLACEHOLDER'));
+
 export const FAQSection: React.FC = () => {
-  const [openFaq, setOpenFaq] = useState<string | null>(FAQS[0].id);
+  const [openFaq, setOpenFaq] = useState<string | null>(VISIBLE_FAQS[0]?.id ?? null);
 
   const toggleFaq = (id: string) => {
     setOpenFaq(openFaq === id ? null : id);
@@ -32,11 +35,27 @@ export const FAQSection: React.FC = () => {
           </p>
         </div>
 
+        {/* FAQPage structured data, generated from the same items shown on the page */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              '@id': 'https://sunparto.ir/#faqpage',
+              mainEntity: VISIBLE_FAQS.map((faq) => ({
+                '@type': 'Question',
+                name: faq.question,
+                acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+              })),
+            }),
+          }}
+        />
+
         {/* FAQ Accordion List */}
         <div className="space-y-3.5 text-right">
-          {FAQS.map((faq) => {
+          {VISIBLE_FAQS.map((faq) => {
             const isOpen = openFaq === faq.id;
-            const isPlaceholder = faq.question.includes('PLACEHOLDER');
 
             return (
               <div
@@ -44,9 +63,7 @@ export const FAQSection: React.FC = () => {
                 className={`rounded-2xl border transition-all overflow-hidden shadow-xs ${
                   isOpen 
                     ? 'bg-white border-amber-300 shadow-sm' 
-                    : isPlaceholder 
-                      ? 'bg-amber-50/20 border-dashed border-amber-200 opacity-75' 
-                      : 'bg-slate-50/70 border-slate-200/80 hover:border-slate-300'
+                    : 'bg-slate-50/70 border-slate-200/80 hover:border-slate-300'
                 }`}
               >
                 <button
@@ -57,7 +74,6 @@ export const FAQSection: React.FC = () => {
                   id={`faq-btn-${faq.id}`}
                 >
                   <div className="flex items-center gap-2">
-                    {isPlaceholder && <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />}
                     <h3 className={`text-sm sm:text-base font-bold transition-colors ${
                       isOpen ? 'text-amber-800' : 'text-slate-950'
                     }`}>
@@ -71,16 +87,15 @@ export const FAQSection: React.FC = () => {
                   </div>
                 </button>
 
-                {isOpen && (
-                  <div 
-                    id={`faq-ans-${faq.id}`}
-                    role="region"
-                    aria-labelledby={`faq-btn-${faq.id}`}
-                    className="px-5 pb-6 pt-1 sm:px-6 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 animate-in fade-in duration-200"
-                  >
-                    <p className="font-normal">{faq.answer}</p>
-                  </div>
-                )}
+                <div 
+                  id={`faq-ans-${faq.id}`}
+                  role="region"
+                  aria-labelledby={`faq-btn-${faq.id}`}
+                  hidden={!isOpen}
+                  className="px-5 pb-6 pt-1 sm:px-6 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100"
+                >
+                  <p className="font-normal">{faq.answer}</p>
+                </div>
               </div>
             );
           })}

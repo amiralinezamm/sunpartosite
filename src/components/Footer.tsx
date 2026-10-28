@@ -54,9 +54,9 @@ export const Footer: React.FC = () => {
 
           {/* Fast Navigation Links (3 cols) */}
           <nav className="lg:col-span-3 space-y-4" aria-label="لینک‌های دسترسی سریع فوتر">
-            <h4 className="text-sm font-bold text-[#0C1730] uppercase tracking-wider border-r-2 border-[#F2B134] pr-2.5">
+            <h2 className="text-sm font-bold text-[#0C1730] uppercase tracking-wider border-r-2 border-[#F2B134] pr-2.5">
               دسترسی سریع
-            </h4>
+            </h2>
             <ul className="grid grid-cols-2 gap-2 text-xs">
               {navLinks.map((link, idx) => (
                 <li key={idx}>
@@ -74,9 +74,9 @@ export const Footer: React.FC = () => {
 
           {/* Contact Details & Direct Call (4 cols) */}
           <div className="lg:col-span-4 space-y-4">
-            <h4 className="text-sm font-bold text-[#0C1730] uppercase tracking-wider border-r-2 border-[#F2B134] pr-2.5">
+            <h2 className="text-sm font-bold text-[#0C1730] uppercase tracking-wider border-r-2 border-[#F2B134] pr-2.5">
               ارتباط با دفتر مرکزی
-            </h4>
+            </h2>
 
             <address className="not-italic space-y-3 text-xs">
               <div className="flex items-start gap-2 text-slate-700">
@@ -143,7 +143,7 @@ export const Footer: React.FC = () => {
         {/* Bottom Bar & Copyright */}
         <div className="mt-12 pt-8 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div>
-            © {new Date().getFullYear()} {siteContent.company.nameFa} ({siteContent.company.nameEn}). تمامی حقوق برای {siteContent.about.ceoName} محفوظ است.
+            © {new Intl.DateTimeFormat('fa-IR-u-ca-persian', { year: 'numeric' }).format(new Date())} — تمامی حقوق برای شرکت {siteContent.company.nameFa} ({siteContent.company.nameEn}) محفوظ است.
           </div>
 
           <div className="flex items-center gap-4">
