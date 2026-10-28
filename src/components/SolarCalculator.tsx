@@ -8,12 +8,17 @@ import { COMPANY_INFO } from '../data/solarData';
 
 type PropertyCategory = 'residential-villa' | 'office-commercial' | 'industrial-warehouse';
 
+// Persian digits for displayed numbers
+const fa = (n: number) => n.toLocaleString('fa-IR');
+
 export const SolarCalculator: React.FC = () => {
   // 1. Unified Property Type:
   // - 'residential-villa': ویلا و منزل مسکونی (یکپارچه‌شده: ویلا با برق/بدون برق، آپارتمان و مسکونی)
   // - 'office-commercial': دفتر اداری و تجاری
   // - 'industrial-warehouse': سوله صنعتی، کارگاه و کارخانه
   const [propertyType, setPropertyType] = useState<PropertyCategory>('residential-villa');
+  // Off-grid systems should be sized for the short winter days of mountain areas like Damavand
+  const [designSeason, setDesignSeason] = useState<'annual' | 'winter'>('annual');
 
   // ==========================================
   // 1) RESIDENTIAL & VILLA APPLIANCES STATE
@@ -66,6 +71,7 @@ export const SolarCalculator: React.FC = () => {
 
   // دستگاه‌های صنعتی و خط تولید (میزان مصرف وارد شده توسط کاربر بر حسب کیلووات یا اسب بخار)
   const [indMachineKw, setIndMachineKw] = useState<number>(15); // توان کل دستگاه‌های همزمان کار
+  const [indMachineKwDraft, setIndMachineKwDraft] = useState<string | null>(null); // متن در حال تایپ کاربر
   const [indMachineHours, setIndMachineHours] = useState<number>(8); // ساعت کارکرد روزانه
   const [indMachineSurge, setIndMachineSurge] = useState<'normal' | 'heavy'>('normal'); // جریان راه‌اندازی (موتورهای سنگین / الکتروموتور)
 
@@ -263,8 +269,9 @@ export const SolarCalculator: React.FC = () => {
   // ==========================================
   // SYSTEM SIZING (Solar kW, Panels, Battery, Inverter)
   // ==========================================
-  // Effective sun hours: 5.0h, system loss: 1.25
-  const requiredSolarKw = (totalDailyWh / (5.0 * 1000)) * 1.22;
+  // Effective sun hours: annual average 5.0h, worst-case winter 3.5h; system loss factor: 1.22
+  const sunHours = designSeason === 'winter' ? 3.5 : 5.0;
+  const requiredSolarKw = (totalDailyWh / (sunHours * 1000)) * 1.22;
   
   let calculatedKw = 3;
   let panelCount = 6;
@@ -347,12 +354,14 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
 
     const text = `سلام جناب ${COMPANY_INFO.manager} گرامی،
 من از طریق محاسبه‌گر سایت ${COMPANY_INFO.name} برآورد اولیه گرفتم:
-📌 نوع کاربری: ${propertyCategoryLabels[propertyType]}${appliancesText}
+📌 نوع کاربری: ${propertyCategoryLabels[propertyType]}
+☀️ مبنای طراحی: ${designSeason === 'winter' ? 'روزهای کوتاه زمستان (۳.۵ ساعت آفتاب مؤثر)' : 'میانگین سالانه (۵ ساعت آفتاب مؤثر)'}${appliancesText}
 ⚡ توان پیشنهادی نیروگاه: حدود ${calculatedKw} کیلووات (${panelCount} عدد پنل ۵۵۰ وات)
-🔌 اینورتر پیشنهادی: ${inverterKw} کیلووات سان‌پرتو
+🔌 اینورتر پیشنهادی: ${inverterKw} کیلووات (Growatt)
 🔋 بانک باتری لیتیومی: ${batteryKwh} کیلووات‌ساعت (LiFePO4 هوشمند)
 📍 جهت دریافت پیش‌فاکتور رسمی، قیمت روز تجهیزات و هماهنگی بازدید پیام دادم.`;
-    return encodeURIComponent(text);
+    // Drop the empty lines left by unchecked appliances
+    return encodeURIComponent(text.replace(/\n{2,}/g, '\n'));
   };
 
   return (
@@ -416,7 +425,7 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                     }`}
                   >
                     <span className="font-bold">{item.title}</span>
-                    <span className={`text-[10px] ${propertyType === item.id ? 'text-slate-900/80' : 'text-slate-500'}`}>
+                    <span className={`text-[11px] ${propertyType === item.id ? 'text-slate-900/80' : 'text-slate-500'}`}>
                       {item.subtitle}
                     </span>
                   </button>
@@ -461,7 +470,7 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                       <Minus className="w-3.5 h-3.5" />
                     </button>
                     <span className="w-9 text-center font-mono font-black text-sm text-slate-900">
-                      {resLamps}
+                      {fa(resLamps)}
                     </span>
                     <button
                       type="button"
@@ -493,8 +502,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                         checked={resHasFridge}
                         onChange={(e) => setResHasFridge(e.target.checked)}
                         className="sr-only peer"
+                        aria-label="یخچال"
                       />
-                      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                      <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                     </label>
                   </div>
 
@@ -577,8 +587,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                         checked={resHasTv}
                         onChange={(e) => setResHasTv(e.target.checked)}
                         className="sr-only peer"
+                        aria-label="تلویزیون"
                       />
-                      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                      <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                     </label>
                   </div>
 
@@ -627,8 +638,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                         checked={resHasPump}
                         onChange={(e) => setResHasPump(e.target.checked)}
                         className="sr-only peer"
+                        aria-label="پمپ آب"
                       />
-                      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                      <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                     </label>
                   </div>
 
@@ -678,8 +690,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                         checked={resHasCooler}
                         onChange={(e) => setResHasCooler(e.target.checked)}
                         className="sr-only peer"
+                        aria-label="سیستم سرمایش"
                       />
-                      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                      <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                     </label>
                   </div>
 
@@ -784,8 +797,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                       checked={resHasSecurity}
                       onChange={(e) => setResHasSecurity(e.target.checked)}
                       className="sr-only peer"
+                      aria-label="دوربین مداربسته و مودم"
                     />
-                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                    <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                   </label>
                 </div>
 
@@ -814,7 +828,7 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                     <div>
                       <div className="text-xs sm:text-sm font-bold text-slate-950 flex items-center gap-2">
                         <span>تعداد کامپیوتر رومیزی و مانیتور</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 text-amber-950 font-semibold">مهم</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-200 text-amber-950 font-semibold">مهم</span>
                       </div>
                       <div className="text-[11px] text-slate-600">کیس + مانیتور پرسنل (حدود ۲۲۰ وات هر ست اداری)</div>
                     </div>
@@ -830,7 +844,7 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                       <Minus className="w-3.5 h-3.5" />
                     </button>
                     <span className="w-8 text-center font-mono font-black text-base text-slate-950">
-                      {officeComputers}
+                      {fa(officeComputers)}
                     </span>
                     <button
                       type="button"
@@ -865,7 +879,7 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                       <Minus className="w-3.5 h-3.5" />
                     </button>
                     <span className="w-8 text-center font-mono font-black text-sm text-slate-900">
-                      {officeLaptops}
+                      {fa(officeLaptops)}
                     </span>
                     <button
                       type="button"
@@ -899,7 +913,7 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                       <Minus className="w-3.5 h-3.5" />
                     </button>
                     <span className="w-8 text-center font-mono font-black text-sm text-slate-900">
-                      {officeLamps}
+                      {fa(officeLamps)}
                     </span>
                     <button
                       type="button"
@@ -929,8 +943,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                       checked={officeServerRack}
                       onChange={(e) => setOfficeServerRack(e.target.checked)}
                       className="sr-only peer"
+                      aria-label="رک سرور و تجهیزات شبکه"
                     />
-                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                    <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                   </label>
                 </div>
 
@@ -951,8 +966,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                       checked={officePrinter}
                       onChange={(e) => setOfficePrinter(e.target.checked)}
                       className="sr-only peer"
+                      aria-label="پرینتر و دستگاه کپی"
                     />
-                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                    <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                   </label>
                 </div>
 
@@ -974,8 +990,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                         checked={officeCooler}
                         onChange={(e) => setOfficeCooler(e.target.checked)}
                         className="sr-only peer"
+                        aria-label="سیستم سرمایش اداری"
                       />
-                      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                      <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                     </label>
                   </div>
 
@@ -1046,7 +1063,7 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                         <Minus className="w-3.5 h-3.5" />
                       </button>
                       <span className="w-8 text-center font-mono font-black text-base text-slate-950">
-                        {indFloodlightsCount}
+                        {fa(indFloodlightsCount)}
                       </span>
                       <button
                         type="button"
@@ -1116,7 +1133,7 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                       <div>
                         <div className="text-xs sm:text-sm font-bold text-slate-950 flex items-center gap-2">
                           <span>مجموع توان دستگاه‌های صنعتی و خط تولید</span>
-                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-200 text-amber-950 font-bold">ورود دستی کاربر</span>
+                          <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-200 text-amber-950 font-bold">ورود دستی کاربر</span>
                         </div>
                         <div className="text-[11px] text-slate-600">میزان کیلووات دستگاه‌ها و ماشین‌آلاتی که همزمان کار می‌کنند</div>
                       </div>
@@ -1132,8 +1149,14 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                           type="number"
                           min="1"
                           max="200"
-                          value={indMachineKw}
-                          onChange={(e) => setIndMachineKw(Math.max(1, Math.min(250, Number(e.target.value) || 0)))}
+                          value={indMachineKwDraft ?? indMachineKw}
+                          onChange={(e) => {
+                            setIndMachineKwDraft(e.target.value);
+                            const kw = Number(e.target.value);
+                            if (kw >= 1) setIndMachineKw(Math.min(200, kw));
+                          }}
+                          onBlur={() => setIndMachineKwDraft(null)}
+                          aria-label="توان کل دستگاه‌های صنعتی به کیلووات"
                           className="w-20 px-2 py-1 border border-amber-300 rounded-lg text-center font-mono font-bold text-sm text-slate-950 bg-amber-50/50 focus:outline-none focus:ring-2 focus:ring-amber-500"
                         />
                         <span className="text-xs font-bold text-amber-800">کیلووات (kW)</span>
@@ -1143,17 +1166,18 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                     <input
                       type="range"
                       min="2"
-                      max="80"
+                      max="200"
                       step="1"
-                      value={Math.min(80, indMachineKw)}
+                      value={indMachineKw}
                       onChange={(e) => setIndMachineKw(Number(e.target.value))}
+                      aria-label="توان کل دستگاه‌های صنعتی"
                       className="w-full accent-amber-500 h-2 bg-slate-200 rounded-lg cursor-pointer"
                     />
                     
-                    <div className="flex justify-between text-[10px] text-slate-500 font-mono">
+                    <div className="flex justify-between text-[11px] text-slate-500 font-mono">
                       <span>۲ kW (کارگاه سبک)</span>
-                      <span>۲۵ kW (کارگاه متوسط)</span>
-                      <span>۸۰+ kW (کارخانه و خط تولید)</span>
+                      <span>۱۰۰ kW (کارگاه بزرگ)</span>
+                      <span>۲۰۰ kW (کارخانه و خط تولید)</span>
                     </div>
                   </div>
 
@@ -1225,8 +1249,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                         checked={indHasCompressor}
                         onChange={(e) => setIndHasCompressor(e.target.checked)}
                         className="sr-only peer"
+                        aria-label="کمپرسور یا پمپ صنعتی"
                       />
-                      <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                      <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                     </label>
                   </div>
 
@@ -1275,8 +1300,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                       checked={indHasCctv}
                       onChange={(e) => setIndHasCctv(e.target.checked)}
                       className="sr-only peer"
+                      aria-label="سیستم نظارت تصویری سوله"
                     />
-                    <div className="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                    <div className="w-11 h-6 bg-slate-300 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 peer-focus-visible:ring-offset-2 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
                   </label>
                 </div>
 
@@ -1295,8 +1321,34 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                 <h3 className="text-base font-bold text-slate-950">برآورد مهندسی تجهیزات خورشیدی</h3>
               </div>
               <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-900 border border-amber-200 font-medium">
-                تخمینی دقیق
+                برآورد اولیه
               </span>
+            </div>
+
+            {/* Design basis: annual average vs. short winter days */}
+            <div className="space-y-1.5">
+              <span className="text-[11px] font-bold text-slate-700 block">مبنای طراحی سیستم:</span>
+              <div className="grid grid-cols-2 gap-2 text-xs" role="group" aria-label="مبنای طراحی سیستم">
+                {[
+                  { id: 'annual', label: 'میانگین سالانه', hint: '۵ ساعت آفتاب مؤثر' },
+                  { id: 'winter', label: 'زمستان (توصیه برای آفگرید)', hint: '۳.۵ ساعت آفتاب مؤثر' },
+                ].map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={() => setDesignSeason(item.id as 'annual' | 'winter')}
+                    aria-pressed={designSeason === item.id}
+                    className={`py-2 px-2 rounded-lg border text-center cursor-pointer transition-colors ${
+                      designSeason === item.id
+                        ? 'bg-amber-500 text-slate-950 font-bold border-amber-400'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span className="block">{item.label}</span>
+                    <span className="block text-[11px] font-normal opacity-80">{item.hint}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Key Output Numbers */}
@@ -1309,9 +1361,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                   ظرفیت پیشنهادی
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-slate-950 mt-1 font-mono">
-                  {calculatedKw} <span className="text-xs font-sans text-slate-500">kW</span>
+                  {fa(calculatedKw)} <span className="text-xs font-sans text-slate-500">kW</span>
                 </div>
-                <div className="text-[10px] text-slate-500 mt-0.5">توان نیروگاه خورشیدی</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">توان نیروگاه خورشیدی</div>
               </div>
 
               {/* Solar Panels Count */}
@@ -1321,9 +1373,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                   تعداد پنل ۵۵۰ وات
                 </div>
                 <div className="text-2xl sm:text-3xl font-black text-slate-950 mt-1 font-mono">
-                  {panelCount} <span className="text-xs font-sans text-slate-500">عدد</span>
+                  {fa(panelCount)} <span className="text-xs font-sans text-slate-500">عدد</span>
                 </div>
-                <div className="text-[10px] text-slate-500 mt-0.5">مونوکریستال هاف‌سل</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">مونوکریستال هاف‌سل</div>
               </div>
 
               {/* Inverter Capacity */}
@@ -1333,9 +1385,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                   توان اینورتر
                 </div>
                 <div className="text-xl sm:text-2xl font-black text-slate-900 mt-1 font-mono">
-                  {inverterKw} <span className="text-xs font-sans text-slate-500">kW</span>
+                  {fa(inverterKw)} <span className="text-xs font-sans text-slate-500">kW</span>
                 </div>
-                <div className="text-[10px] text-slate-500 mt-0.5">تمام سینوسی Growatt</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">تمام سینوسی Growatt</div>
               </div>
 
               {/* Battery (Lithium Only!) */}
@@ -1345,9 +1397,9 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                   بانک باتری لیتیومی
                 </div>
                 <div className="text-xl sm:text-2xl font-black text-amber-700 mt-1 font-mono">
-                  {batteryKwh} <span className="text-xs font-sans text-slate-500">kWh</span>
+                  {fa(batteryKwh)} <span className="text-xs font-sans text-slate-500">kWh</span>
                 </div>
-                <div className="text-[10px] text-slate-500 mt-0.5">باتری هوشمند LiFePO4</div>
+                <div className="text-[11px] text-slate-500 mt-0.5">باتری هوشمند LiFePO4</div>
               </div>
 
             </div>
@@ -1359,11 +1411,15 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                 توصیه مهندسی {COMPANY_INFO.name}:
               </div>
               <p className="text-[11px] text-slate-600 leading-relaxed font-normal">
-                {propertyType === 'residential-villa' && `بر اساس مصرف روزانه حدود ${(totalDailyWh / 1000).toFixed(1)} کیلووات‌ساعت، سیستم فوق با بانک باتری لیتیومی LiFePO4 با طول عمر بالای ۱۰ سال و راندمان ۹۵٪ پیشنهاد می‌شود.`}
-                {propertyType === 'office-commercial' && `برای ${officeComputers} کامپیوتر و سایر بارهای حساس اداری با مصرف روزانه حدود ${(totalDailyWh / 1000).toFixed(1)} کیلووات‌ساعت، اینورتر تمام سینوسی با قابلیت Zero Transfer Time جهت جلوگیری از ری‌استارت سیستم‌ها پیشنهاد می‌گردد.`}
-                {propertyType === 'industrial-warehouse' && `برای بارهای صنعتی و روشنایی سوله با مصرف روزانه ${(totalDailyWh / 1000).toFixed(1)} کیلووات‌ساعت، محاسبه بر اساس تحمل جریان استارت هجومی و پایداری در اوج بار خط تولید انجام شده است.`}
+                {propertyType === 'residential-villa' && `بر اساس مصرف روزانه حدود ${fa(Math.round(totalDailyWh / 100) / 10)} کیلووات‌ساعت، سیستم فوق با بانک باتری لیتیومی LiFePO4 با طول عمر بالای ۱۰ سال و راندمان ۹۵٪ پیشنهاد می‌شود.`}
+                {propertyType === 'office-commercial' && `برای ${fa(officeComputers)} کامپیوتر و سایر بارهای حساس اداری با مصرف روزانه حدود ${fa(Math.round(totalDailyWh / 100) / 10)} کیلووات‌ساعت، اینورتر تمام سینوسی با قابلیت Zero Transfer Time جهت جلوگیری از ری‌استارت سیستم‌ها پیشنهاد می‌گردد.`}
+                {propertyType === 'industrial-warehouse' && `برای بارهای صنعتی و روشنایی سوله با مصرف روزانه ${fa(Math.round(totalDailyWh / 100) / 10)} کیلووات‌ساعت، محاسبه بر اساس تحمل جریان استارت هجومی و پایداری در اوج بار خط تولید انجام شده است.`}
               </p>
             </div>
+
+            <p className="text-[11px] text-slate-500 leading-relaxed">
+              این ابزار ظرفیت و تجهیزات را برآورد می‌کند؛ قیمت تجهیزات روزانه تغییر می‌کند و در پیش‌فاکتور رسمی پس از بررسی کارشناس اعلام می‌شود.
+            </p>
 
             {/* Direct WhatsApp CTA with Generated Calculation */}
             <div className="space-y-2 pt-1">

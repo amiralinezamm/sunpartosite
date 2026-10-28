@@ -3,31 +3,55 @@ import { Phone, MessageCircle, MapPin, Clock, Send, UserCheck, CheckCircle2, Nav
 import { COMPANY_INFO } from '../data/solarData';
 import siteContent from '../../content/site';
 
+const PROPERTY_TYPES = [
+  'ویلای بدون برق (Off-Grid)',
+  'ویلای با برق شبکه (هیبرید پشتیبان)',
+  'منزل مسکونی و آپارتمان',
+  'دفتر اداری یا واحد تجاری',
+  'واحد صنعتی و کارخانه',
+  'پمپ آب کشاورزی',
+];
+
+// Converts Persian/Arabic digits to ASCII so phone validation accepts either keyboard
+const normalizeDigits = (value: string) =>
+  value
+    .replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
+    .replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     location: '',
-    propertyType: 'ویلا',
+    propertyType: PROPERTY_TYPES[0],
     message: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone) return;
+    const phone = normalizeDigits(formData.phone).replace(/[\s-]/g, '');
+    if (!formData.name.trim() || !phone) return;
+    if (!/^(\+98|0098|0)?9\d{9}$/.test(phone)) {
+      setPhoneError('شماره همراه معتبر نیست؛ مثال: ۰۹۱۲۱۲۳۴۵۶۷');
+      return;
+    }
+    setPhoneError('');
 
     // Generate WhatsApp text & open WhatsApp
     const message = `سلام جناب ${siteContent.about.ceoName} گرامی،
 درخواست مشاوره / بازدید رایگان برای سیستم برق خورشیدی ثبت کردم:
 👤 نام: ${formData.name}
-📞 شماره تماس: ${formData.phone}
+📞 شماره تماس: ${phone}
 📍 موقعیت ملک: ${formData.location || 'ذکر نشده'}
 🏠 نوع ملک: ${formData.propertyType}
 📝 توضیحات / تجهیزات مورد نظر: ${formData.message || 'نیاز به مشاوره کامل و بازدید'}`;
 
     const url = `${COMPANY_INFO.whatsappUrl}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+    // Fall back to same-tab navigation when the popup is blocked
+    const win = window.open(url, '_blank');
+    if (!win) window.location.href = url;
     setIsSubmitted(true);
   };
 
@@ -159,15 +183,22 @@ export const ContactSection: React.FC = () => {
                   فرم آنلاین درخواست بازدید و استعلام قیمت
                 </h3>
                 <p className="text-xs text-slate-500 font-normal">
-                  اطلاعات خود را وارد کنید تا مستقیماً به پیام‌رسان واتساپ هدایت شده و پیش‌فاکتور اولیه برای شما صادر شود.
+                  اطلاعات خود را وارد کنید؛ پیام آماده در واتساپ باز می‌شود و پس از ارسال آن، کارشناسان ما برای برآورد و پیش‌فاکتور با شما تماس می‌گیرند.
                 </p>
               </div>
 
               {isSubmitted ? (
                 <div className="p-5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs sm:text-sm text-center space-y-2">
                   <CheckCircle2 className="w-8 h-8 text-emerald-600 mx-auto" />
-                  <div className="font-bold text-slate-950">درخواست شما با موفقیت به واتساپ ارسال شد!</div>
-                  <p className="text-emerald-800">{siteContent.about.ceoName} در اسرع وقت پاسخگوی شما خواهند بود.</p>
+                  <div className="font-bold text-slate-950">پیام شما در واتساپ آماده شد</div>
+                  <p className="text-emerald-800">لطفاً در واتساپ دکمه ارسال را بزنید تا درخواست شما به دست ما برسد.</p>
+                  <button
+                    type="button"
+                    onClick={() => setIsSubmitted(false)}
+                    className="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-emerald-200 text-emerald-800 font-semibold hover:bg-emerald-100 transition-colors cursor-pointer"
+                  >
+                    واتساپ باز نشد؟ دوباره امتحان کنید
+                  </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-4" aria-label="فرم استعلام قیمت و مشاوره">
@@ -199,8 +230,15 @@ export const ContactSection: React.FC = () => {
                         placeholder="0912..."
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                        aria-invalid={!!phoneError}
+                        aria-describedby={phoneError ? 'contact-phone-error' : undefined}
+                        inputMode="tel"
+                        autoComplete="tel"
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs sm:text-sm placeholder:text-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white transition-colors text-right"
                       />
+                      {phoneError && (
+                        <p id="contact-phone-error" className="text-[11px] text-red-600">{phoneError}</p>
+                      )}
                     </div>
                   </div>
 
@@ -229,12 +267,9 @@ export const ContactSection: React.FC = () => {
                         onChange={(e) => setFormData({ ...formData, propertyType: e.target.value })}
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs sm:text-sm focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                       >
-                        <option value="ویلای بدون برق (Off-Grid)">ویلای بدون برق (Off-Grid)</option>
-                        <option value="ویلای با برق شبکه (هیبرید پشتیبان)">ویلای با برق شبکه (هیبرید پشتیبان)</option>
-                        <option value="منزل مسکونی و آپارتمان">منزل مسکونی و آپارتمان</option>
-                        <option value="دفتر اداری یا واحد تجاری">دفتر اداری یا واحد تجاری</option>
-                        <option value="واحد صنعتی و کارخانه">واحد صنعتی و کارخانه</option>
-                        <option value="پمپ آب کشاورزی">پمپ آب کشاورزی</option>
+                        {PROPERTY_TYPES.map((type) => (
+                          <option key={type} value={type}>{type}</option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -287,7 +322,7 @@ export const ContactSection: React.FC = () => {
                   <div className="text-xs font-bold text-slate-950">دفتر مهندسی {siteContent.company.nameFa}</div>
                   <div className="text-[11px] text-slate-600">{siteContent.company.address}</div>
                   <a
-                    href="https://maps.google.com/?q=Damavand+Gilavand"
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteContent.company.address)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-white text-slate-800 text-[11px] font-semibold border border-slate-200 hover:bg-slate-50 transition-colors shadow-xs"

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { X, MapPin, Zap, Calendar, ShieldCheck, Check, MessageCircle, Phone } from 'lucide-react';
 import { Project } from '../types';
 import { COMPANY_INFO } from '../data/solarData';
@@ -9,11 +9,40 @@ interface ProjectModalProps {
 }
 
 export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) => {
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
+  // Escape to close, lock background scroll, and move focus into the dialog while open
+  useEffect(() => {
+    if (!project) return;
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKeyDown);
+    closeBtnRef.current?.focus();
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+      previouslyFocused?.focus();
+    };
+  }, [project, onClose]);
+
   if (!project) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white border border-slate-200 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl text-slate-900 text-right max-h-[90vh] flex flex-col">
+    <div
+      className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="project-modal-title"
+        className="bg-white border border-slate-200 rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl text-slate-900 text-right max-h-[90vh] flex flex-col">
         
         {/* Modal Header */}
         <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
@@ -21,11 +50,12 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
             <span className="px-2.5 py-1 rounded bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
               {project.categoryLabel}
             </span>
-            <h3 className="text-base sm:text-lg font-bold text-slate-950 truncate max-w-xs sm:max-w-md">
+            <h3 id="project-modal-title" className="text-base sm:text-lg font-bold text-slate-950 truncate max-w-xs sm:max-w-md">
               {project.title}
             </h3>
           </div>
           <button
+            ref={closeBtnRef}
             onClick={onClose}
             className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
             aria-label="بستن"
@@ -41,7 +71,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
           <div className="relative rounded-xl overflow-hidden aspect-[16/9] border border-slate-200 bg-slate-100">
             <img
               src={project.image}
-              alt={project.title}
+              alt={`تصویر پروژه ${project.title}`}
               referrerPolicy="no-referrer"
               className="w-full h-full object-cover"
             />

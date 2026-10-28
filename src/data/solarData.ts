@@ -17,6 +17,8 @@ export const COMPANY_INFO = {
   workingHours: 'هرروز ۸:۳۰ الی ۲۰',
   establishedYear: '۱۳۹۳', // تأسیس شرکت ۱۳۹۳ و شروع فعالیت بخش تخصصی خورشیدی از سال ۱۳۹۸
   showTeamPhoto: false, // Client answered "نه، ترجیح میدهم نباشد" - No photo block anywhere
+  description:
+    'شرکت سان پرتو انرژی فعالیت رسمی خود را از سال ۱۳۹۳ آغاز نموده و بخش تخصصی انرژی خورشیدی شرکت از سال ۱۳۹۸ به طور متمرکز آغاز به کار کرده است. با شرکت در رویدادهای بین‌المللی انرژی‌های پاک و تکیه بر دانش فنی مهندسی روز، کوله‌باری از تجربه در تامین انرژی پایدار گردآوری کرده‌ایم؛ و مفتخریم که کارفرمایان و مشتریان عزیز همواره با اعتماد کامل از ما یاد می‌کنند.',
 };
 
 export const TRUST_METRICS: TrustMetric[] = [
@@ -190,6 +192,20 @@ export const SERVICES: ServiceItem[] = [
       'استراکچرها و سازه‌های آلومینیومی آنودایز شده و گالوانیزه گرم ضدزنگ'
     ],
     equipmentList: ['برندهای برتر جهانی Growatt, JA Solar, Jinko', 'تضمین اصالت کالا', 'ارسال سریع به سراسر کشور']
+  },
+  {
+    id: 'on-grid',
+    title: 'نیروگاه‌های متصل به شبکه (On-Grid) و درآمدزایی',
+    shortDesc: 'کاهش قبض برق و فروش برق تولیدی به شبکه با قرارداد خرید تضمینی.',
+    fullDesc: 'احداث نیروگاه‌های خورشیدی متصل به شبکه جهت کاهش چشمگیر قبوض برق و فروش برق تولیدی بر اساس قرارداد خرید تضمینی ۲۰ ساله ساتبا.',
+    iconName: 'Zap',
+    badge: 'درآمد پایدار',
+    features: [
+      'کاهش چشمگیر هزینه قبوض برق مسکونی و صنعتی',
+      'فروش برق تولیدی بر اساس قرارداد خرید تضمینی ۲۰ ساله ساتبا',
+      'قابل اجرا روی پشت‌بام منازل، سقف سوله‌ها و زمین‌های بلااستفاده'
+    ],
+    equipmentList: ['مسکونی', 'صنعتی', 'سقف سوله', 'قرارداد ساتبا']
   },
   {
     id: 'maintenance-monitoring',
@@ -388,6 +404,9 @@ export const BENEFITS = [
     iconName: 'Coins'
   }
 ];
+
+// ⚠️ Set to true only after the client confirms these are real customers who agreed to be quoted
+export const TESTIMONIALS_VERIFIED = false;
 
 export const TESTIMONIALS: Testimonial[] = [
   {

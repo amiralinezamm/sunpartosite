@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hoorparto.ir/sitemap.xml
+Sitemap: https://sunparto.ir/sitemap.xml

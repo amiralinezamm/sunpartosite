@@ -12,6 +12,8 @@ export const ServicesSection: React.FC = () => {
         return <Layers className="w-5 h-5" />;
       case 'Activity':
         return <Activity className="w-5 h-5" />;
+      case 'Zap':
+        return <Zap className="w-5 h-5" />;
       default:
         return <Sparkles className="w-5 h-5" />;
     }
@@ -40,7 +42,7 @@ export const ServicesSection: React.FC = () => {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 items-stretch">
           {SERVICES.map((service, index) => {
             // Service 1 (off-grid) flagship tags
             const tags = index === 0 
@@ -94,7 +96,7 @@ export const ServicesSection: React.FC = () => {
                   {tags && (
                     <div className="flex flex-wrap gap-1.5 pt-2">
                       {tags.map((tag, tIdx) => (
-                        <span key={tIdx} className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200/60 text-[10px] font-medium">
+                        <span key={tIdx} className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200/60 text-[11px] font-medium">
                           {tag}
                         </span>
                       ))}

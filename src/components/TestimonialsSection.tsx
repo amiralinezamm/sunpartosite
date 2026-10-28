@@ -1,10 +1,10 @@
 import React from 'react';
 import { Star, Quote, CheckCircle2, User, MapPin } from 'lucide-react';
-import { TESTIMONIALS } from '../data/solarData';
+import { TESTIMONIALS, TESTIMONIALS_VERIFIED } from '../data/solarData';
 import siteContent from '../../content/site';
 
 export const TestimonialsSection: React.FC = () => {
-  if (!TESTIMONIALS || TESTIMONIALS.length === 0) {
+  if (!TESTIMONIALS_VERIFIED || TESTIMONIALS.length === 0) {
     return null;
   }
 
@@ -67,7 +67,7 @@ export const TestimonialsSection: React.FC = () => {
                   <User className="w-4 h-4" />
                 </div>
                 <div>
-                  <h4 className="text-xs font-bold text-slate-950">{item.name}</h4>
+                  <p className="text-xs font-bold text-slate-950">{item.name}</p>
                   <div className="text-[11px] text-slate-500 flex items-center gap-1">
                     <MapPin className="w-3 h-3 text-amber-600" />
                     <span>{item.location}</span>
