@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+/* Route Tailwind's font utilities (font-sans / font-mono, used on numbers and phone digits) to the brand font */
+@theme {
+  --font-sans: 'Diodrum Arabic', Tahoma, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Diodrum Arabic', Tahoma, ui-monospace, monospace;
+}
+
 @font-face {
   font-family: 'Diodrum Arabic';
   src: url('/fonts/DiodrumArabic-Extralight.woff2') format('woff2');

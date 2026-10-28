@@ -71,8 +71,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
           <div className="relative rounded-xl overflow-hidden aspect-[16/9] border border-slate-200 bg-slate-100">
             <img
               src={project.image}
-              alt={`تصویر پروژه ${project.title}`}
-              referrerPolicy="no-referrer"
+              alt={`تصویر شماتیک پروژه ${project.title}`}
               className="w-full h-full object-cover"
             />
             <div className="absolute bottom-3 right-3 px-3 py-1.5 rounded-lg bg-white/95 backdrop-blur-md text-xs font-semibold text-slate-800 border border-slate-200 flex items-center gap-1.5 shadow-xs">

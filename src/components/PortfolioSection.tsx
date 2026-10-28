@@ -74,14 +74,16 @@ export const PortfolioSection: React.FC = () => {
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-100">
                   <img
                     src={project.image}
-                    alt={`پروژه نیروگاه و سیستم برق خورشیدی ${project.title} در ${project.location} - شرکت ${siteContent.company.nameFa}`}
+                    alt={`تصویر شماتیک پروژه ${project.title} در ${project.location}`}
                     width="600"
                     height="375"
                     loading="lazy"
-                    referrerPolicy="no-referrer"
                     className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                   />
                   
+                  <div className="absolute top-3 left-3 px-2 py-0.5 rounded-md bg-slate-950/60 backdrop-blur-sm text-[11px] text-slate-200 border border-white/10">
+                    تصویر شماتیک
+                  </div>
                   {/* Category Badge */}
                   <div className="absolute top-3 right-3 px-2.5 py-1 rounded-lg bg-white/90 backdrop-blur-md text-[11px] font-bold text-slate-800 border border-slate-200 shadow-xs">
                     {project.categoryLabel}
