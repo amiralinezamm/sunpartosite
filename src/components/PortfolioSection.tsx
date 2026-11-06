@@ -4,6 +4,7 @@ import { PROJECTS, COMPANY_INFO } from '../data/solarData';
 import { Project } from '../types';
 import { ProjectModal } from './ProjectModal';
 import siteContent from '../../content/site';
+import { track } from '../analytics/tracker';
 
 export const PortfolioSection: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<string>('all');
@@ -49,7 +50,10 @@ export const PortfolioSection: React.FC = () => {
           {categories.map((cat) => (
             <button
               key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
+              onClick={() => {
+                setActiveCategory(cat.id);
+                track('project_filter', cat.id, cat.label);
+              }}
               aria-pressed={activeCategory === cat.id}
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                 activeCategory === cat.id
@@ -139,7 +143,10 @@ export const PortfolioSection: React.FC = () => {
               {/* Action Button to Open Specs Modal */}
               <div className="p-5 sm:p-6 pt-0">
                 <button
-                  onClick={() => setSelectedProject(project)}
+                  onClick={() => {
+                    setSelectedProject(project);
+                    track('project_open', project.id, project.title);
+                  }}
                   className="w-full inline-flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-50 hover:bg-amber-500 text-slate-800 hover:text-slate-950 text-xs sm:text-sm font-bold border border-slate-200 hover:border-amber-400 transition-all cursor-pointer shadow-xs"
                   id={`project-details-btn-${project.id}`}
                   title={`مشاهده مشخصات فنی و جزئیات پروژه ${project.title}`}

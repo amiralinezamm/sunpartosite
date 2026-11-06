@@ -8,7 +8,8 @@
     "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs",
     "preview": "vite preview",
     "clean": "rm -rf dist dist-ssr",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit && tsc --noEmit -p worker",
+    "worker:dev": "wrangler dev --port 8787"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.14",
@@ -18,11 +19,13 @@
     "react-dom": "^19.0.1"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261106.1",
     "@types/node": "^22.14.0",
     "autoprefixer": "^10.4.21",
     "esbuild": "^0.25.0",
     "tailwindcss": "^4.1.14",
     "typescript": "~5.8.2",
-    "vite": "^6.2.3"
+    "vite": "^6.2.3",
+    "wrangler": "^4.158.0"
   }
 }

@@ -2,6 +2,7 @@ import {StrictMode} from 'react';
 import {createRoot, hydrateRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+import {initAnalytics} from './analytics/tracker';
 
 const container = document.getElementById('root')!;
 const app = (
@@ -16,3 +17,5 @@ if (container.hasChildNodes()) {
 } else {
   createRoot(container).render(app);
 }
+
+initAnalytics();

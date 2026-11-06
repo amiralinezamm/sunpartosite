@@ -2,8 +2,21 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "sunpartosite",
   "compatibility_date": "2026-10-01",
+  "main": "worker/index.ts",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*", "/admin", "/admin/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sunparto-analytics",
+      "database_id": "5a0088db-0536-4dbf-9eeb-a185b493285e"
+    }
+  ],
+  "triggers": {
+    "crons": ["30 21 * * *"]
   }
 }

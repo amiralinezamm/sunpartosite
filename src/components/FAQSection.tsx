@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { HelpCircle, ChevronDown, MessageCircle, Phone } from 'lucide-react';
 import { FAQS, COMPANY_INFO } from '../data/solarData';
 import siteContent from '../../content/site';
+import { track } from '../analytics/tracker';
 import { MascotCallout } from './MascotCallout';
 
 // Placeholder items (awaiting client copy, see CONTENT-TODO.md) stay out of the page
@@ -11,6 +12,7 @@ export const FAQSection: React.FC = () => {
   const [openFaq, setOpenFaq] = useState<string | null>(VISIBLE_FAQS[0]?.id ?? null);
 
   const toggleFaq = (id: string) => {
+    if (openFaq !== id) track('faq_open', id, VISIBLE_FAQS.find((faq) => faq.id === id)?.question);
     setOpenFaq(openFaq === id ? null : id);
   };
 

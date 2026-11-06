@@ -22,3 +22,14 @@ npm run lint     # بررسی TypeScript
 - `public/` — لوگوها، آیکون‌ها، تصویر اشتراک‌گذاری (`og-image.png`)، `robots.txt` و `sitemap.xml`
 
 موارد محتوایی باقی‌مانده در `CONTENT-TODO.md` ثبت شده‌اند.
+
+## آمار بازدید (`/admin`)
+
+داشبورد خصوصی آمار روی همان Cloudflare Worker اجرا می‌شود و داده‌ها در دیتابیس رایگان D1 ذخیره می‌شوند.
+
+- `src/analytics/tracker.ts` — ثبت رویدادها در مرورگر. نام، شماره تلفن، محتوای فرم و IP ذخیره نمی‌شود.
+- `worker/` — دریافت رویدادها (`/api/t`)، ورود مدیر، گزارش‌ها و صفحه داشبورد (`worker/dashboard.html`)
+- رمز ورود، Secret با نام `ADMIN_PASSWORD` است: `npx wrangler secret put ADMIN_PASSWORD`
+- برای حذف بازدید خودتان از آمار: یک بار `https://sunparto.ir/?notrack=1` را روی آن دستگاه باز کنید (`?notrack=0` برمی‌گرداند).
+- اجرای محلی: `npm run build` و سپس `npm run worker:dev`، با رمز آزمایشی در فایل `.dev.vars`
+

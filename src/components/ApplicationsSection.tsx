@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Home, Trees, Building2, Factory, CheckCircle2, ArrowLeft, Sun, Zap, Info } from 'lucide-react';
 import { APPLICATION_CATEGORIES, COMPANY_INFO } from '../data/solarData';
+import { track } from '../analytics/tracker';
 
 export const ApplicationsSection: React.FC = () => {
   const [selectedApp, setSelectedApp] = useState<string>('villa');
@@ -69,7 +70,10 @@ export const ApplicationsSection: React.FC = () => {
                 tabIndex={isSelected ? 0 : -1}
                 aria-controls={`tabpanel-${cat.id}`}
                 id={`tab-${cat.id}`}
-                onClick={() => setSelectedApp(cat.id)}
+                onClick={() => {
+                  setSelectedApp(cat.id);
+                  track('app_tab', cat.id, cat.title);
+                }}
                 className={`p-4 rounded-2xl text-right transition-all flex flex-col items-start gap-2.5 border cursor-pointer ${
                   isSelected 
                     ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-xs scale-[1.01]' 

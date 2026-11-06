@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { COMPANY_INFO } from '../data/solarData';
 import { MascotCallout } from './MascotCallout';
+import { track } from '../analytics/tracker';
 
 type PropertyCategory = 'residential-villa' | 'office-commercial' | 'industrial-warehouse';
 
@@ -1437,6 +1438,7 @@ ${indHasCctv ? `- سیستم امنیتی و نظارت تصویری سوله: �
                 rel="noopener noreferrer"
                 className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs sm:text-sm shadow-xs hover:shadow transition-all active:scale-98 cursor-pointer"
                 id="calculator-whatsapp-submit"
+                onClick={() => track('calc_submit', propertyType, undefined, calculatedKw)}
                 title="ارسال این برآورد به واتساپ مهندس نظام الشعرایی"
               >
                 <MessageCircle className="w-4 h-4 stroke-[2.2]" />

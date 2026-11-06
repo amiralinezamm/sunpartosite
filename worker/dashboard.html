@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>آمار سان پرتو</title>
+<link rel="icon" href="/favicon.svg">
+<style>
+@font-face { font-family: "Diodrum Arabic"; src: url("/fonts/DiodrumArabic-Regular.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Diodrum Arabic"; src: url("/fonts/DiodrumArabic-Bold.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+:root {
+  --bg: #f4f6fa; --surface: #ffffff; --ink: #101a30; --ink2: #4b566c; --ink3: #7a8499; --line: #e3e7ef; --grid: #edf0f5;
+  --navy: #0c1730; --bar: #d98a06; --bar-soft: #fbeccd; --accent-ink: #8f5a00;
+  --good: #137a4d; --good-bg: #e2f5eb; --warn: #94600a; --warn-bg: #fbf0d6; --bad: #b3312a; --bad-bg: #fce8e6;
+  --shadow: 0 1px 2px rgba(16, 26, 48, .05);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a1020; --surface: #121b30; --ink: #eaeef6; --ink2: #aab3c6; --ink3: #7e889d; --line: #243049; --grid: #1b2640;
+    --navy: #060b18; --bar: #f2ab2e; --bar-soft: #33290f; --accent-ink: #f5c365;
+    --good: #55d197; --good-bg: #123022; --warn: #f0c061; --warn-bg: #352a0f; --bad: #f58a83; --bad-bg: #3a1a18;
+    --shadow: none; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 400 14px/1.75 "Diodrum Arabic", Tahoma, sans-serif; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--bar); outline-offset: 2px; }
+[hidden] { display: none !important; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Login */
+.login { min-height: 100dvh; display: grid; place-items: center; padding: 16px; background: var(--navy); }
+.login form { width: min(360px, 100%); background: var(--surface); border-radius: 14px; padding: 28px 24px; display: grid; gap: 14px; }
+.login h1 { margin: 0; font-size: 20px; }
+.login p { margin: 0; color: var(--ink2); font-size: 13px; }
+.field { width: 100%; background: var(--bg); border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; }
+.primary { background: var(--bar); color: #1c1200; border: 0; border-radius: 9px; padding: 10px 16px; font-weight: 700; }
+.err { color: var(--bad); font-size: 13px; min-height: 1.4em; }
+
+/* Shell */
+.top { position: sticky; top: 0; z-index: 20; background: var(--navy); color: #fff; padding: 10px max(16px, env(safe-area-inset-right)) 0 max(16px, env(safe-area-inset-left)); }
+.top-in, .main { max-width: 1240px; margin: 0 auto; }
+.top-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+.brand { font-weight: 700; font-size: 16px; display: flex; gap: 10px; align-items: center; }
+.livepill { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: #cdd6e8; border: 1px solid #2c3a59; border-radius: 99px; padding: 1px 10px; }
+.livepill i { width: 8px; height: 8px; border-radius: 50%; background: #55d197; animation: pulse 2s infinite; }
+@keyframes pulse { 50% { opacity: .35; } }
+@media (prefers-reduced-motion: reduce) { .livepill i { animation: none; } }
+.ranges { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.ranges button { background: transparent; border: 1px solid #2c3a59; color: #cdd6e8; border-radius: 8px; padding: 2px 10px; font-size: 13px; }
+.ranges button[aria-pressed="true"] { background: #f2ab2e; border-color: #f2ab2e; color: #1c1200; font-weight: 700; }
+.ranges input { background: #16223c; border: 1px solid #2c3a59; color: #fff; border-radius: 8px; padding: 1px 6px; font-size: 12.5px; color-scheme: dark; direction: ltr; }
+.ghost { background: transparent; border: 1px solid #2c3a59; color: #cdd6e8; border-radius: 8px; padding: 2px 10px; font-size: 13px; text-decoration: none; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; margin-top: 8px; scrollbar-width: none; }
+.tabs button { background: none; border: 0; border-bottom: 3px solid transparent; color: #aab6cc; padding: 6px 12px; white-space: nowrap; }
+.tabs button[aria-selected="true"] { color: #fff; font-weight: 700; border-bottom-color: #f2ab2e; }
+.main { padding: 18px max(16px, env(safe-area-inset-right)) 60px max(16px, env(safe-area-inset-left)); display: grid; gap: 16px; }
+.grid { display: grid; gap: 16px; }
+.g2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); }
+.g3 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); min-width: 0; }
+.card h2 { margin: 0 0 2px; font-size: 15px; font-weight: 700; }
+.card .sub { margin: 0 0 12px; color: var(--ink3); font-size: 12.5px; }
+.empty { color: var(--ink3); font-size: 13px; padding: 14px 0; }
+
+/* KPI */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(46%, 240px), 1fr)); gap: 12px; }
+.kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 2px; align-content: start; }
+.kpi .t { color: var(--ink2); font-size: 12.5px; }
+.kpi .v { font-size: 23px; font-weight: 700; line-height: 1.35; }
+.kpi .d { font-size: 12px; color: var(--ink3); }
+.kpi .d b { font-weight: 700; }
+.up { color: var(--good); } .down { color: var(--bad); }
+.kpi.hero { background: var(--navy); border-color: var(--navy); color: #fff; }
+.kpi.hero .t, .kpi.hero .d { color: #c2cce0; }
+.kpi.hero .up { color: #6fe0ac; } .kpi.hero .down { color: #ffa49d; }
+
+/* Bars */
+.seg { display: inline-flex; gap: 2px; background: var(--bg); border-radius: 8px; padding: 2px; }
+.seg button { border: 0; background: none; border-radius: 6px; padding: 1px 10px; font-size: 12.5px; color: var(--ink2); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 700; box-shadow: var(--shadow); }
+.head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.chart svg { display: block; width: 100%; direction: ltr; }
+.chart text { fill: var(--ink3); font-size: 11px; font-family: inherit; }
+.chart rect.b { fill: var(--bar); }
+.chart rect.hit { fill: transparent; }
+.chart rect.hit:hover { fill: var(--bar-soft); fill-opacity: .55; }
+.rows { display: grid; gap: 7px; }
+.row { display: grid; gap: 2px; }
+.row .lab { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+.row .lab span:first-child { overflow-wrap: anywhere; min-width: 0; }
+.row .lab .val { color: var(--ink2); white-space: nowrap; }
+.track { height: 6px; background: var(--grid); border-radius: 4px; overflow: hidden; }
+.track i { display: block; height: 100%; background: var(--bar); border-radius: 4px; }
+
+/* Heat */
+.heat { display: grid; grid-template-columns: 48px repeat(24, minmax(0, 1fr)); gap: 2px; direction: ltr; min-width: 560px; }
+.heat .c { aspect-ratio: 1; border-radius: 3px; min-height: 12px; }
+.heat .l { font-size: 10.5px; color: var(--ink3); text-align: center; }
+.heat .day { font-size: 11.5px; color: var(--ink2); direction: rtl; text-align: right; align-self: center; }
+.scroll-x { overflow-x: auto; }
+.scale { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink3); margin-top: 8px; }
+.scale i { width: 80px; height: 8px; border-radius: 3px; background: linear-gradient(to left, var(--bar), var(--grid)); }
+
+/* Funnel */
+.fn { display: grid; gap: 8px; }
+.fn-row { display: grid; grid-template-columns: minmax(120px, 190px) 1fr 92px; gap: 10px; align-items: center; font-size: 13px; }
+.fn-row .track { height: 20px; border-radius: 5px; }
+.fn-row .track i { border-radius: 5px; }
+.fn-row .val { text-align: left; color: var(--ink2); white-space: nowrap; }
+@media (max-width: 520px) { .fn-row { grid-template-columns: 1fr 74px; } .fn-row .track { grid-column: 1 / -1; grid-row: 2; height: 12px; } }
+
+/* Tables and feed */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: right; font-weight: 700; color: var(--ink2); font-size: 12px; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 7px 8px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+tr.click { cursor: pointer; } tr.click:hover td { background: var(--grid); }
+.pill { display: inline-block; border-radius: 99px; padding: 0 8px; font-size: 11.5px; white-space: nowrap; }
+.p-good { background: var(--good-bg); color: var(--good); }
+.p-warn { background: var(--warn-bg); color: var(--warn); }
+.p-bad { background: var(--bad-bg); color: var(--bad); }
+.p-info { background: var(--bar-soft); color: var(--accent-ink); }
+.feed { display: grid; gap: 4px; max-height: 340px; overflow: auto; font-size: 13px; }
+.feed div { display: flex; gap: 10px; justify-content: space-between; border-bottom: 1px solid var(--grid); padding-bottom: 4px; }
+.feed time { color: var(--ink3); white-space: nowrap; font-size: 12px; }
+.ltr { direction: ltr; unicode-bidi: isolate; }
+.more { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 4px 16px; }
+
+/* Session drawer */
+.drawer { position: fixed; inset: 0; z-index: 40; background: rgba(4, 8, 18, .55); display: flex; justify-content: flex-start; }
+.drawer > div { width: min(520px, 100%); background: var(--surface); height: 100%; overflow: auto; padding: 18px; }
+.steps { display: grid; gap: 0; margin-top: 12px; }
+.step { display: grid; grid-template-columns: 62px 1fr; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--grid); font-size: 13px; }
+.step time { color: var(--ink3); font-size: 12px; }
+.step.conv { background: var(--good-bg); border-radius: 6px; padding-inline: 6px; }
+.meta { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 8px; }
+
+/* Click map */
+.mapwrap { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: #fff; margin-inline: auto; }
+.mapwrap iframe { position: absolute; top: 0; left: 0; border: 0; transform-origin: top left; pointer-events: none; }
+.mapwrap canvas { position: absolute; top: 0; left: 0; transform-origin: top left; pointer-events: none; }
+
+#tip { position: fixed; z-index: 60; pointer-events: none; background: #0c1730; color: #fff; font-size: 12.5px; padding: 4px 9px; border-radius: 7px; white-space: pre-line; max-width: 280px; box-shadow: 0 4px 16px rgba(0, 0, 0, .3); }
+</style>
+</head>
+<body>
+<div class="login" id="login" hidden>
+  <form id="loginForm">
+    <h1>آمار سان پرتو</h1>
+    <p>این صفحه خصوصی است. رمز مدیریت را وارد کنید.</p>
+    <input class="field" id="password" type="password" autocomplete="current-password" aria-label="رمز مدیریت" required>
+    <div class="err" id="loginErr" role="alert"></div>
+    <button class="primary" type="submit">ورود</button>
+  </form>
+</div>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="top-in">
+      <div class="top-row">
+        <div class="brand">آمار سان پرتو <span class="livepill" id="livePill"><i></i><span id="liveCount">…</span></span></div>
+        <div class="ranges" id="ranges" role="group" aria-label="بازه زمانی">
+          <button data-r="0">امروز</button><button data-r="1">دیروز</button><button data-r="7">۷ روز</button><button data-r="30">۳۰ روز</button><button data-r="90">۹۰ روز</button>
+          <input type="date" id="from" aria-label="از تاریخ"><input type="date" id="to" aria-label="تا تاریخ">
+          <a class="ghost" id="exportBtn" href="#">خروجی CSV</a>
+          <button id="logout">خروج</button>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-t="overview">نمای کلی</button>
+        <button role="tab" data-t="engage">تعامل با سایت</button>
+        <button role="tab" data-t="audience">مخاطبان و منابع</button>
+        <button role="tab" data-t="map">نقشه کلیک</button>
+        <button role="tab" data-t="visitors">مسیر بازدیدکنندگان</button>
+        <button role="tab" data-t="tech">سرعت و خطاها</button>
+      </nav>
+    </div>
+  </header>
+  <main class="main" id="view"></main>
+</div>
+<div class="drawer" id="drawer" hidden></div>
+<div id="tip" hidden></div>
+
+<script nonce="__NONCE__">
+'use strict';
+const $ = (id) => document.getElementById(id);
+const OFFSET = 3.5 * 3600e3;
+const dayOf = (ts) => new Date(ts + OFFSET).toISOString().slice(0, 10);
+const today = () => dayOf(Date.now());
+const shift = (d, n) => new Date(Date.parse(d + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10);
+
+// Every value from the database passes through esc(): visitors can send arbitrary text to the collector
+const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fa = (n, d = 0) => Number(n || 0).toLocaleString('fa-IR', { maximumFractionDigits: d });
+const pct = (a, b) => (b ? (a / b) * 100 : 0);
+const faPct = (a, b) => fa(pct(a, b), pct(a, b) < 10 ? 1 : 0) + '٪';
+const dur = (ms) => {
+  const s = Math.round((ms || 0) / 1000);
+  if (s < 60) return fa(s) + ' ثانیه';
+  const m = Math.floor(s / 60);
+  return fa(m) + ' دقیقه' + (s % 60 ? ' و ' + fa(s % 60) + ' ثانیه' : '');
+};
+const pDate = (d, opts = { month: 'short', day: 'numeric' }) => new Intl.DateTimeFormat('fa-IR-u-ca-persian', { timeZone: 'UTC', ...opts }).format(new Date(d + 'T00:00:00Z'));
+const clock = (ts) => new Intl.DateTimeFormat('fa-IR', { timeZone: 'Asia/Tehran', hour: '2-digit', minute: '2-digit' }).format(ts);
+const clockS = (ts) => new Intl.DateTimeFormat('fa-IR', { timeZone: 'Asia/Tehran', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(ts);
+const stamp = (ts) => pDate(dayOf(ts)) + '، ' + clock(ts);
+const countryNames = (() => { try { return new Intl.DisplayNames(['fa'], { type: 'region' }); } catch { return null; } })();
+const country = (c) => { try { return (c && countryNames?.of(c)) || c || 'نامشخص'; } catch { return c; } };
+
+const SECTIONS = { hero: 'صفحه اول', about: 'درباره ما', applications: 'کاربردها', services: 'خدمات', portfolio: 'نمونه‌کارها', calculator: 'محاسبه‌گر', process: '۵ گام', benefits: 'مزایا', testimonials: 'نظرات', faq: 'سوالات متداول', contact: 'تماس', header: 'سربرگ', footer: 'پاورقی', floating: 'دکمه شناور', page: 'صفحه' };
+const secName = (s) => SECTIONS[s] || s || 'نامشخص';
+const SECTION_ORDER = ['hero', 'about', 'applications', 'services', 'portfolio', 'calculator', 'process', 'benefits', 'testimonials', 'faq', 'contact'];
+const CONV = { call_click: 'تماس تلفنی', whatsapp_click: 'پیام واتساپ', form_submit: 'ارسال فرم مشاوره' };
+const DEVICES = { mobile: 'موبایل', desktop: 'دسکتاپ', tablet: 'تبلت' };
+const CALC = { 'residential-villa': 'ویلا و مسکونی', residential: 'ویلا و مسکونی', office: 'اداری و تجاری', commercial: 'اداری و تجاری', industrial: 'صنعتی' };
+
+function describe(e) {
+  const where = e.name ? ' در ' + secName(e.name) : '';
+  switch (e.type) {
+    case 'pageview': return 'وارد سایت شد';
+    case 'section_view': return 'رسید به بخش «' + secName(e.name) + '»';
+    case 'section_time': return fa(e.value) + ' ثانیه در بخش «' + secName(e.name) + '» ماند';
+    case 'scroll': return 'تا ' + fa(e.name) + '٪ صفحه پایین رفت';
+    case 'click': return e.label ? 'کلیک روی «' + e.label + '»' : 'کلیک' + where;
+    case 'rage': return 'چند کلیک پشت‌سرهم و کلافه' + where + (e.label ? ' روی «' + e.label + '»' : '');
+    case 'outbound': return 'رفتن به سایت ' + (e.label || 'دیگر');
+    case 'call_click': return 'تماس تلفنی زد' + where;
+    case 'whatsapp_click': return 'واتساپ را باز کرد' + where;
+    case 'form_start': return 'پر کردن فرم مشاوره را شروع کرد';
+    case 'form_error': return 'خطای شماره موبایل در فرم';
+    case 'form_submit': return 'فرم مشاوره را فرستاد' + (e.name ? ' (' + e.name + ')' : '');
+    case 'calc_use': return 'با محاسبه‌گر کار کرد';
+    case 'calc_submit': return 'برآورد ' + fa(e.value, 1) + ' کیلوواتی را به واتساپ فرستاد';
+    case 'faq_open': return 'سوال را باز کرد: ' + (e.label || '');
+    case 'project_open': return 'جزئیات پروژه را دید: ' + (e.label || '');
+    case 'project_filter': return 'فیلتر نمونه‌کار: ' + (e.label || '');
+    case 'app_tab': return 'کاربرد را دید: ' + (e.label || '');
+    case 'error': return 'خطای فنی: ' + (e.label || '');
+    default: return e.type;
+  }
+}
+
+const state = { from: today(), to: today(), preset: 0, tab: 'overview', metric: 'visitors', report: null, sessionFilter: '', sessions: [], offset: 0, mapDevice: 'desktop' };
+
+async function api(path, params = {}) {
+  const qs = new URLSearchParams(params).toString();
+  const r = await fetch('/api/admin/' + path + (qs ? '?' + qs : ''), { credentials: 'same-origin' });
+  if (r.status === 401) { showLogin(); throw new Error('unauthorized'); }
+  if (!r.ok) throw new Error('http ' + r.status);
+  return r.json();
+}
+const rangeParams = () => ({ from: state.from, to: state.to });
+
+// ---------- building blocks ----------
+function delta(cur, prev, invert) {
+  if (!prev) return cur ? '<span>دوره قبل داده‌ای نبود</span>' : '<span>بدون تغییر</span>';
+  const change = ((cur - prev) / prev) * 100;
+  if (Math.abs(change) < 0.5) return '<span>بدون تغییر</span>';
+  const good = invert ? change < 0 : change > 0;
+  return `<b class="${good ? 'up' : 'down'}">${change > 0 ? '▲' : '▼'} ${fa(Math.abs(change))}٪</b> نسبت به دوره قبل`;
+}
+const kpi = (t, v, d, cls = '') => `<div class="kpi ${cls}"><div class="t">${t}</div><div class="v num">${v}</div><div class="d">${d}</div></div>`;
+
+function rows(list, { label = (r) => r.name, value = (r) => r.sessions ?? r.n, note, total } = {}) {
+  if (!list || !list.length) return '<div class="empty">هنوز داده‌ای برای این بازه نیست.</div>';
+  const max = total || Math.max(...list.map(value), 1);
+  return '<div class="rows">' + list.map((r) => {
+    const v = value(r);
+    return `<div class="row"><div class="lab"><span>${esc(label(r))}</span><span class="val num">${note ? esc(note(r)) : fa(v)}</span></div><div class="track"><i style="width:${Math.max(pct(v, max), 1)}%"></i></div></div>`;
+  }).join('') + '</div>';
+}
+const card = (title, sub, body, cls = '') => `<section class="card ${cls}"><h2>${title}</h2>${sub ? `<p class="sub">${sub}</p>` : '<div style="height:8px"></div>'}${body}</section>`;
+
+function columns(el, series, metric, isHours) {
+  const W = Math.max(el.clientWidth, 280), H = 220, L = 34, B = 24, T = 8;
+  const vals = series.map((s) => s[metric] || 0);
+  const top = niceMax(Math.max(...vals, 1));
+  const y = (v) => T + (H - T - B) * (1 - v / top);
+  const step = (W - L) / series.length;
+  const bw = Math.max(Math.min(step - 2, 34), 2);
+  const every = Math.ceil(series.length / Math.floor((W - L) / 54));
+  let s = `<svg viewBox="0 0 ${W} ${H}" height="${H}" role="img" aria-label="نمودار بازدید در طول زمان">`;
+  for (let i = 0; i <= 4; i++) {
+    const v = (top / 4) * i;
+    if (i && !Number.isInteger(v)) continue;
+    s += `<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="var(--grid)"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">${fa(v)}</text>`;
+  }
+  series.forEach((p, i) => {
+    const x = L + i * step + (step - bw) / 2, v = p[metric] || 0, name = isHours ? 'ساعت ' + fa(p.k) : pDate(p.k, { weekday: 'long', month: 'long', day: 'numeric' });
+    const tip = `${name}\nبازدیدکننده: ${fa(p.visitors)}\nجلسه: ${fa(p.sessions)}\nتماس یا درخواست: ${fa(p.converted)}`;
+    if (v) {
+      const h = Math.max(y(0) - y(v), 2), r = Math.min(4, bw / 2);
+      s += `<path d="M${x} ${y(0)}V${y(0) - h + r}Q${x} ${y(0) - h} ${x + r} ${y(0) - h}H${x + bw - r}Q${x + bw} ${y(0) - h} ${x + bw} ${y(0) - h + r}V${y(0)}Z" fill="var(--bar)"/>`;
+    }
+    if (i % every === 0) s += `<text x="${x + bw / 2}" y="${H - 7}" text-anchor="middle">${isHours ? fa(p.k) : pDate(p.k)}</text>`;
+    s += `<rect class="hit" x="${L + i * step}" y="${T}" width="${step}" height="${H - T - B}" data-tip="${esc(tip)}"/>`;
+  });
+  el.innerHTML = s + `<line x1="${L}" x2="${W}" y1="${y(0)}" y2="${y(0)}" stroke="var(--line)"/></svg>`;
+}
+function niceMax(v) {
+  if (v <= 4) return 4;
+  const m = 10 ** Math.floor(Math.log10(v));
+  for (const k of [1, 2, 4, 5, 8, 10]) if (k * m >= v) return k * m;
+  return 10 * m;
+}
+
+function heatGrid(data) {
+  const order = [[6, 'شنبه'], [0, 'یکشنبه'], [1, 'دوشنبه'], [2, 'سه‌شنبه'], [3, 'چهارشنبه'], [4, 'پنج‌شنبه'], [5, 'جمعه']];
+  const map = new Map(data.map((d) => [d.dow + '-' + d.hour, d.n]));
+  const max = Math.max(...data.map((d) => d.n), 1);
+  let h = '<div class="heat"><div></div>';
+  for (let i = 0; i < 24; i++) h += `<div class="l">${i % 3 === 0 ? fa(i) : ''}</div>`;
+  for (const [dow, name] of order) {
+    h += `<div class="day">${name}</div>`;
+    for (let i = 0; i < 24; i++) {
+      const n = map.get(dow + '-' + i) || 0;
+      const mix = n ? 18 + (n / max) * 82 : 0;
+      h += `<div class="c" style="background:${n ? `color-mix(in srgb, var(--bar) ${mix}%, var(--grid))` : 'var(--grid)'}" data-tip="${name}، ساعت ${fa(i)}\n${fa(n)} جلسه"></div>`;
+    }
+  }
+  return `<div class="scroll-x">${h}</div></div><div class="scale">کم <i></i> زیاد</div>`;
+}
+
+// ---------- tabs ----------
+function renderOverview(r) {
+  const k = r.kpi, p = r.prev;
+  const newShare = faPct(k.new_sessions, k.sessions);
+  const bounce = k.sessions ? 100 - pct(k.engaged, k.sessions) : 0, prevBounce = p.sessions ? 100 - pct(p.engaged, p.sessions) : 0;
+  const convRate = pct(k.converted, k.sessions);
+  const f = r.funnel;
+  const steps = [['ورود به سایت', f.visit], ['تعامل واقعی با سایت', f.engaged], ['دیدن خدمات یا نمونه‌کارها', f.explored], ['کار با محاسبه‌گر', f.calc], ['رسیدن به بخش تماس', f.contact], ['تماس یا درخواست', f.converted]];
+  $('view').innerHTML = `
+  <div class="kpis">
+    ${kpi('بازدیدکننده', fa(k.visitors), delta(k.visitors, p.visitors), 'hero')}
+    ${kpi('تماس و درخواست', fa(k.conversions), delta(k.conversions, p.conversions), 'hero')}
+    ${kpi('نرخ تبدیل', fa(convRate, 1) + '٪', delta(convRate, pct(p.converted, p.sessions)))}
+    ${kpi('جلسه بازدید', fa(k.sessions), delta(k.sessions, p.sessions))}
+    ${kpi('بازدیدکننده جدید', fa(k.new_sessions), newShare + ' از جلسه‌ها')}
+    ${kpi('میانگین زمان فعال', dur(k.avg_engaged_ms), delta(k.avg_engaged_ms, p.avg_engaged_ms))}
+    ${kpi('نرخ خروج بی‌تعامل', fa(bounce) + '٪', delta(bounce, prevBounce, true))}
+    ${kpi('میانگین اسکرول', fa(k.avg_scroll) + '٪', 'عمق خواندن صفحه')}
+  </div>
+  <section class="card">
+    <div class="head"><div><h2>روند بازدید</h2><p class="sub" style="margin:0">${r.range.span === 1 ? 'به تفکیک ساعت، به وقت تهران' : 'به تفکیک روز'}</p></div>
+      <div class="seg" id="metric">
+        <button data-m="visitors">بازدیدکننده</button><button data-m="sessions">جلسه</button><button data-m="converted">تماس و درخواست</button>
+      </div></div>
+    <div class="chart" id="trend"></div>
+  </section>
+  <div class="grid g2">
+    <section class="card"><h2>الان چه خبر است؟</h2><p class="sub">آخرین کارها در سایت، خودکار به‌روز می‌شود</p><div class="feed" id="feed"><div class="empty">در حال خواندن…</div></div></section>
+    ${card('تماس و درخواست از کدام دکمه‌ها آمده؟', 'مشتری بالقوه از کجا تصمیم گرفته تماس بگیرد', rows(r.conversionPlaces, { label: (x) => (CONV[x.type] || x.type) + ' · ' + secName(x.name), value: (x) => x.n }))}
+  </div>
+  <section class="card"><h2>قیف تبدیل</h2><p class="sub">از هر ${fa(f.visit)} جلسه، چند جلسه به هر مرحله رسیده</p>
+    <div class="fn">${steps.map(([t, n]) => `<div class="fn-row"><span>${t}</span><div class="track"><i style="width:${Math.max(pct(n, f.visit), n ? 1 : 0)}%"></i></div><span class="val num">${fa(n)} · ${faPct(n, f.visit)}</span></div>`).join('')}</div>
+  </section>
+  ${card('پرترافیک‌ترین ساعت‌های هفته', 'تعداد جلسه‌ها به تفکیک روز و ساعت؛ برای زمان پاسخگویی و تبلیغات', heatGrid(r.heat))}`;
+  const draw = () => { const el = $('trend'); if (el) columns(el, r.series, state.metric, r.range.span === 1); };
+  draw();
+  document.querySelectorAll('#metric button').forEach((b) => {
+    b.setAttribute('aria-pressed', b.dataset.m === state.metric);
+    b.addEventListener('click', () => { state.metric = b.dataset.m; document.querySelectorAll('#metric button').forEach((x) => x.setAttribute('aria-pressed', x === b)); draw(); });
+  });
+  refreshLive();
+}
+
+function renderEngage(r) {
+  const views = new Map(r.sectionViews.map((s) => [s.name, s.sessions]));
+  const times = new Map(r.sectionTime.map((s) => [s.name, s]));
+  const total = r.kpi.sessions;
+  const list = SECTION_ORDER.filter((s) => views.has(s));
+  const scrollRows = ['25', '50', '75', '100'].map((m) => ({ name: 'تا ' + fa(m) + '٪ صفحه', sessions: (r.scroll.find((s) => s.name === m) || {}).sessions || 0 }));
+  const form = Object.fromEntries(r.forms.map((f) => [f.name, f.sessions]));
+  $('view').innerHTML = `
+  <section class="card"><h2>هر بخش سایت چقدر دیده و خوانده شده؟</h2><p class="sub">درصد جلسه‌هایی که به بخش رسیده‌اند و میانگین زمان خواندن هر نفر</p>
+    ${list.length ? `<div class="scroll-x"><table><thead><tr><th>بخش</th><th>جلسه</th><th>درصد رسیدن</th><th>میانگین زمان</th></tr></thead><tbody>${list.map((s) => {
+      const t = times.get(s), n = views.get(s);
+      return `<tr><td>${secName(s)}</td><td class="num">${fa(n)}</td><td style="min-width:130px"><div class="row"><span class="num" style="font-size:12px">${faPct(n, total)}</span><div class="track"><i style="width:${pct(n, total)}%"></i></div></div></td><td class="num">${t ? dur((t.seconds / t.sessions) * 1000) : '—'}</td></tr>`;
+    }).join('')}</tbody></table></div>` : '<div class="empty">هنوز داده‌ای برای این بازه نیست.</div>'}</section>
+  <div class="grid g2">
+    ${card('پرکلیک‌ترین دکمه‌ها و لینک‌ها', '', rows(r.clicks, { value: (x) => x.n }))}
+    ${card('عمق اسکرول', 'چند جلسه تا کجای صفحه پایین رفته‌اند', rows(scrollRows, { total: total || 1 }))}
+    ${card('فرم مشاوره', 'کجا مشتری را از دست می‌دهیم', rows([{ name: 'شروع پر کردن فرم', sessions: form.form_start || 0 }, { name: 'خطای شماره موبایل', sessions: form.form_error || 0 }, { name: 'ارسال موفق', sessions: form.form_submit || 0 }]))}
+    ${card('درخواست فرم بر اساس نوع ملک', '', rows(r.formTypes, { value: (x) => x.n }))}
+    ${card('محاسبه‌گر: برآوردهای ارسال‌شده', 'میانگین ظرفیت برآوردشده در هر نوع ملک', rows(r.calcTypes, { label: (x) => CALC[x.name] || x.name, value: (x) => x.n, note: (x) => fa(x.n) + ' برآورد · میانگین ' + fa(x.avg_kw, 1) + ' کیلووات' }))}
+    ${card('پربازدیدترین پروژه‌ها', '', rows(r.projects, { value: (x) => x.n }))}
+    ${card('پرسش‌های پرطرفدار', 'سوال‌هایی که بیشتر باز شده‌اند', rows(r.faq, { value: (x) => x.n }))}
+    ${card('کاربردهای پربازدید', '', rows(r.appTabs, { value: (x) => x.n }))}
+    ${card('فیلترهای نمونه‌کار', '', rows(r.projectFilters, { value: (x) => x.n }))}
+    ${card('لینک‌های خروجی', '', rows(r.outbound, { value: (x) => x.n }))}
+  </div>`;
+}
+
+function renderAudience(r) {
+  const convNote = (x) => `${fa(x.sessions)} جلسه · ${faPct(x.converted, x.sessions)} تبدیل`;
+  const opt = { note: convNote };
+  $('view').innerHTML = `<div class="grid g2">
+    ${card('از کجا آمده‌اند؟', 'همراه با نرخ تماس و درخواست هر منبع', rows(r.sources, opt))}
+    ${card('سایت‌های ارجاع‌دهنده', '', rows(r.referrers, opt))}
+    ${card('کمپین‌ها', 'لینک‌هایی که پارامتر utm_campaign دارند', rows(r.campaigns, opt))}
+    ${card('کشور', '', rows(r.countries, { ...opt, label: (x) => country(x.name) }))}
+    ${card('استان', 'تقریبی، بر اساس شبکه اینترنت', rows(r.regions, opt))}
+    ${card('شهر', 'تقریبی، بر اساس شبکه اینترنت', rows(r.cities, opt))}
+    ${card('دستگاه', '', rows(r.devices, { ...opt, label: (x) => DEVICES[x.name] || x.name }))}
+    ${card('مرورگر', '', rows(r.browsers, opt))}
+    ${card('سیستم‌عامل', '', rows(r.systems, opt))}
+    ${card('اندازه صفحه‌نمایش', '', rows(r.screens, opt))}
+    ${card('زبان مرورگر', '', rows(r.languages, opt))}
+  </div>`;
+}
+
+const VITALS = {
+  lcp: { t: 'نمایش محتوای اصلی (LCP)', u: 'ms', good: 2500, poor: 4000 },
+  load: { t: 'بارگذاری کامل صفحه', u: 'ms', good: 3000, poor: 6000 },
+  ttfb: { t: 'پاسخ اولیه سرور (TTFB)', u: 'ms', good: 800, poor: 1800 },
+  cls: { t: 'پرش چیدمان (CLS)', u: '', good: 0.1, poor: 0.25 },
+};
+function renderTech(r) {
+  const cell = (name, device) => {
+    const row = r.perf.find((p) => p.name === name && p.device === device);
+    if (!row) return '<td>—</td>';
+    const m = VITALS[name], v = row.avg;
+    const [cls, word] = v <= m.good ? ['p-good', '✓ خوب'] : v <= m.poor ? ['p-warn', '! متوسط'] : ['p-bad', '✕ ضعیف'];
+    return `<td class="num">${m.u === 'ms' ? fa(v / 1000, 1) + ' ثانیه' : fa(v, 3)} <span class="pill ${cls}">${word}</span></td>`;
+  };
+  $('view').innerHTML = `
+  <section class="card"><h2>سرعت سایت از نگاه بازدیدکننده واقعی</h2><p class="sub">میانگین اندازه‌گیری روی دستگاه خود بازدیدکنندگان</p>
+    <div class="scroll-x"><table><thead><tr><th>شاخص</th><th>موبایل</th><th>دسکتاپ</th><th>تبلت</th></tr></thead><tbody>
+    ${Object.keys(VITALS).map((n) => `<tr><td>${VITALS[n].t}</td>${cell(n, 'mobile')}${cell(n, 'desktop')}${cell(n, 'tablet')}</tr>`).join('')}
+    </tbody></table></div></section>
+  <div class="grid g2">
+    <section class="card"><h2>خطاهای جاوااسکریپت</h2><p class="sub">خطاهایی که روی مرورگر بازدیدکنندگان رخ داده</p>
+      ${r.errors.length ? `<div class="scroll-x"><table><thead><tr><th>خطا</th><th>تعداد</th><th>آخرین بار</th></tr></thead><tbody>${r.errors.map((e) => `<tr><td class="ltr" style="text-align:left;overflow-wrap:anywhere">${esc(e.name)}</td><td class="num">${fa(e.n)}</td><td class="num" style="white-space:nowrap">${stamp(e.last_ts)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">✓ خطایی ثبت نشده است.</div>'}</section>
+    ${card('کلیک‌های کلافه', 'جاهایی که بازدیدکننده چند بار پشت‌سرهم کلیک کرده؛ معمولاً یعنی چیزی کار نمی‌کند', rows(r.rage, { label: (x) => secName(x.name), value: (x) => x.n }))}
+  </div>`;
+}
+
+// ---------- visitor journeys ----------
+async function renderVisitors(append = false) {
+  if (!append) {
+    state.offset = 0; state.sessions = [];
+    const filters = [['', 'همه'], ['converted', 'تماس یا درخواست داده‌اند'], ['new', 'جدید'], ['returning', 'برگشتی'], ['mobile', 'موبایل'], ['desktop', 'دسکتاپ']];
+    $('view').innerHTML = `<section class="card"><div class="head"><div><h2>مسیر تک‌تک بازدیدکنندگان</h2><p class="sub" style="margin:0">روی هر ردیف بزنید تا همه کارهای آن بازدید را قدم‌به‌قدم ببینید. بازدیدکننده‌ها ناشناس هستند.</p></div>
+      <div class="seg" id="sf" style="flex-wrap:wrap">${filters.map(([k, t]) => `<button data-f="${k}" aria-pressed="${k === state.sessionFilter}">${t}</button>`).join('')}</div></div>
+      <div class="scroll-x"><table><thead><tr><th>زمان</th><th>محل</th><th>دستگاه</th><th>منبع</th><th>زمان فعال</th><th>اسکرول</th><th>نتیجه</th></tr></thead><tbody id="sbody"></tbody></table></div>
+      <div id="smore" style="text-align:center;margin-top:12px"></div></section>`;
+    $('sf').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { state.sessionFilter = b.dataset.f; renderVisitors(); } });
+    $('sbody').addEventListener('click', (e) => { const tr = e.target.closest('tr[data-id]'); if (tr) openSession(tr.dataset.id); });
+    $('sbody').addEventListener('keydown', (e) => { const tr = e.target.closest('tr[data-id]'); if (tr && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); openSession(tr.dataset.id); } });
+  }
+  const data = await api('sessions', { ...rangeParams(), filter: state.sessionFilter, offset: state.offset });
+  state.offset += data.sessions.length;
+  const body = $('sbody');
+  if (!body) return;
+  if (!append && !data.sessions.length) body.innerHTML = '<tr><td colspan="7" class="empty">هنوز بازدیدی برای این بازه نیست.</td></tr>';
+  body.insertAdjacentHTML('beforeend', data.sessions.map((s) => `<tr class="click" tabindex="0" data-id="${esc(s.id)}">
+    <td class="num" style="white-space:nowrap">${stamp(s.first_ts)}</td><td>${esc(s.city || country(s.country))}</td><td>${esc(DEVICES[s.device] || s.device)}</td><td>${esc(s.referrer || s.source)}</td>
+    <td class="num" style="white-space:nowrap">${dur(s.engaged_ms)}</td><td class="num">${fa(s.max_scroll)}٪</td>
+    <td>${s.conversions ? `<span class="pill p-good">✓ ${fa(s.conversions)} تماس/درخواست</span>` : s.is_new ? '<span class="pill p-info">جدید</span>' : '<span class="pill p-info">برگشتی</span>'}</td></tr>`).join(''));
+  $('smore').innerHTML = data.sessions.length === 50 ? '<button class="more" id="moreBtn">نمایش بیشتر</button>' : '';
+  $('moreBtn')?.addEventListener('click', () => renderVisitors(true));
+}
+
+async function openSession(id) {
+  const d = await api('session', { id });
+  if (!d.session) return;
+  const s = d.session, drawer = $('drawer');
+  const pills = [s.city || country(s.country), DEVICES[s.device], s.browser, s.os, s.screen, s.referrer || s.source, d.visits > 1 ? 'بازدید شماره ' + fa(d.visits) + ' این نفر' : 'اولین بازدید'].filter(Boolean);
+  const list = d.events.filter((e) => e.type !== 'section_time' && !(e.type === 'click' && !e.label));
+  drawer.innerHTML = `<div role="dialog" aria-modal="true" aria-label="جزئیات بازدید"><div class="head"><div><h2 style="margin:0;font-size:16px">${stamp(s.first_ts)}</h2>
+      <div style="color:var(--ink2);font-size:13px">زمان فعال ${dur(s.engaged_ms)} · اسکرول ${fa(s.max_scroll)}٪</div></div><button class="more" id="closeDrawer">بستن</button></div>
+    <div class="meta">${pills.map((p) => `<span class="pill p-info">${esc(p)}</span>`).join('')}</div>
+    <div class="steps">${list.map((e) => `<div class="step ${CONV[e.type] ? 'conv' : ''}"><time class="num">${clockS(e.ts)}</time><span>${esc(describe(e))}</span></div>`).join('') || '<div class="empty">رویدادی ثبت نشده.</div>'}</div></div>`;
+  drawer.hidden = false;
+  $('closeDrawer').focus();
+  $('closeDrawer').addEventListener('click', () => { drawer.hidden = true; });
+}
+$('drawer').addEventListener('click', (e) => { if (e.target === $('drawer')) $('drawer').hidden = true; });
+addEventListener('keydown', (e) => { if (e.key === 'Escape') $('drawer').hidden = true; });
+
+// ---------- click map: draws real clicks over the live page ----------
+async function renderMap() {
+  const device = state.mapDevice, iw = device === 'mobile' ? 390 : 1366;
+  $('view').innerHTML = `<section class="card"><div class="head"><div><h2>نقشه کلیک روی خود سایت</h2><p class="sub" style="margin:0" id="mapNote">در حال خواندن…</p></div>
+    <div class="seg" id="md"><button data-d="desktop" aria-pressed="${device === 'desktop'}">دسکتاپ</button><button data-d="mobile" aria-pressed="${device === 'mobile'}">موبایل</button></div></div>
+    <div class="mapwrap" id="mapWrap"><iframe id="mapFrame" title="پیش‌نمایش سایت" tabindex="-1" src="/?notrack=1"></iframe><canvas id="mapCanvas"></canvas></div></section>`;
+  $('md').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { state.mapDevice = b.dataset.d; renderMap(); } });
+  const wrap = $('mapWrap'), frame = $('mapFrame'), canvas = $('mapCanvas');
+  const avail = wrap.parentElement.clientWidth;
+  const shown = Math.min(avail, device === 'mobile' ? 390 : 1100), scale = shown / iw;
+  wrap.style.width = shown + 'px'; wrap.style.height = '600px';
+  frame.style.width = iw + 'px'; frame.style.height = '1000px';
+  frame.style.transform = canvas.style.transform = `scale(${scale})`;
+  const [{ clicks }] = await Promise.all([api('clicks', { ...rangeParams(), device }), new Promise((ok) => frame.addEventListener('load', ok, { once: true }))]);
+  await new Promise((ok) => setTimeout(ok, 700));
+  const doc = frame.contentDocument;
+  if (!doc || !$('mapCanvas')) return;
+  const h = doc.documentElement.scrollHeight;
+  frame.style.height = h + 'px'; wrap.style.height = h * scale + 'px';
+  await new Promise((ok) => setTimeout(ok, 300));
+  canvas.width = iw; canvas.height = h;
+  const ctx = canvas.getContext('2d'), scrollY = frame.contentWindow.scrollY;
+  const areas = {};
+  doc.querySelectorAll('section[id], header, footer').forEach((el) => { const r = el.getBoundingClientRect(); areas[el.id || el.tagName.toLowerCase()] = { top: r.top + scrollY, height: r.height }; });
+  ctx.globalCompositeOperation = 'source-over';
+  let drawn = 0;
+  for (const c of clicks) {
+    const a = areas[c.name];
+    if (!a) continue;
+    const x = (c.x / 100) * iw, y = a.top + (c.y / 100) * a.height;
+    const g = ctx.createRadialGradient(x, y, 0, x, y, 34);
+    g.addColorStop(0, 'rgba(226, 40, 30, .5)'); g.addColorStop(.45, 'rgba(242, 150, 20, .22)'); g.addColorStop(1, 'rgba(242, 171, 46, 0)');
+    ctx.fillStyle = g; ctx.fillRect(x - 34, y - 34, 68, 68);
+    drawn++;
+  }
+  $('mapNote').textContent = drawn ? fa(drawn) + ' کلیک روی نسخه فعلی صفحه. هرچه قرمزتر، کلیک بیشتر.' : 'هنوز کلیکی با این دستگاه در این بازه ثبت نشده است.';
+}
+
+// ---------- live ----------
+let liveTimer = null;
+async function refreshLive() {
+  try {
+    const l = await api('live');
+    const n = l.active.length;
+    $('liveCount').textContent = fa(n) + ' نفر آنلاین';
+    const feed = $('feed');
+    if (feed) feed.innerHTML = l.feed.length ? l.feed.map((e) => `<div><span>${esc(describe(e))}<span style="color:var(--ink3)"> · ${esc(e.city || DEVICES[e.device] || '')}</span></span><time class="num">${stamp(e.ts)}</time></div>`).join('') : '<div class="empty" style="border:0">هنوز فعالیتی ثبت نشده است. به محض ورود اولین بازدیدکننده این‌جا نمایش داده می‌شود.</div>';
+  } catch { /* the next tick retries */ }
+}
+
+// ---------- shell ----------
+async function load() {
+  if (state.tab === 'visitors') { renderVisitors(); }
+  else if (state.tab === 'map') { renderMap(); }
+  else {
+    $('view').innerHTML = '<div class="empty">در حال خواندن…</div>';
+    try {
+      state.report = await api('report', rangeParams());
+    } catch (e) {
+      if (e.message !== 'unauthorized') $('view').innerHTML = '<div class="card">دیتابیس آمار در دسترس نیست. اتصال D1 را در Cloudflare بررسی کنید.</div>';
+      return;
+    }
+    ({ overview: renderOverview, engage: renderEngage, audience: renderAudience, tech: renderTech })[state.tab](state.report);
+  }
+  const exp = new URLSearchParams({ ...rangeParams(), type: state.tab === 'visitors' ? 'sessions' : 'events' });
+  $('exportBtn').href = '/api/admin/export?' + exp;
+}
+
+function syncControls() {
+  document.querySelectorAll('#ranges [data-r]').forEach((b) => b.setAttribute('aria-pressed', Number(b.dataset.r) === state.preset));
+  document.querySelectorAll('#tabs button').forEach((b) => b.setAttribute('aria-selected', b.dataset.t === state.tab));
+  $('from').value = state.from; $('to').value = state.to;
+}
+function setPreset(r) {
+  const t = today();
+  state.preset = r;
+  if (r === 0) { state.from = state.to = t; }
+  else if (r === 1) { state.from = state.to = shift(t, -1); }
+  else { state.from = shift(t, -(r - 1)); state.to = t; }
+  syncControls(); load();
+}
+$('ranges').addEventListener('click', (e) => { const b = e.target.closest('[data-r]'); if (b) setPreset(Number(b.dataset.r)); });
+['from', 'to'].forEach((id) => $(id).addEventListener('change', () => {
+  if (!$('from').value || !$('to').value || $('from').value > $('to').value) return;
+  state.from = $('from').value; state.to = $('to').value; state.preset = -1; syncControls(); load();
+}));
+$('tabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b) { state.tab = b.dataset.t; syncControls(); load(); } });
+$('logout').addEventListener('click', async () => { await fetch('/api/admin/logout', { method: 'POST' }); showLogin(); });
+
+let resizeT;
+addEventListener('resize', () => { clearTimeout(resizeT); resizeT = setTimeout(() => { if (state.tab === 'overview' && state.report && $('trend')) columns($('trend'), state.report.series, state.metric, state.report.range.span === 1); }, 150); });
+
+const tip = $('tip');
+document.addEventListener('mousemove', (e) => {
+  const t = e.target.closest?.('[data-tip]');
+  if (!t) { tip.hidden = true; return; }
+  tip.textContent = t.getAttribute('data-tip');
+  tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(Math.max(e.clientX - w / 2, 6), innerWidth - w - 6) + 'px';
+  tip.style.top = (e.clientY - h - 12 < 4 ? e.clientY + 14 : e.clientY - h - 12) + 'px';
+});
+
+function showLogin() { clearInterval(liveTimer); $('app').hidden = true; $('login').hidden = false; $('password').focus(); }
+function startApp() {
+  // The owner's own visits should not count; the same flag works across this origin
+  try { localStorage.setItem('sp_notrack', '1'); } catch {}
+  $('login').hidden = true; $('app').hidden = false;
+  syncControls(); load(); refreshLive();
+  clearInterval(liveTimer);
+  liveTimer = setInterval(() => { if (document.visibilityState === 'visible') refreshLive(); }, 15000);
+}
+$('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  $('loginErr').textContent = '';
+  const r = await fetch('/api/admin/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ password: $('password').value }) });
+  if (r.ok) { $('password').value = ''; startApp(); return; }
+  const code = (await r.json().catch(() => ({}))).error;
+  $('loginErr').textContent = code === 'wrong_password' ? 'رمز درست نیست.' : code === 'too_many' ? 'تلاش زیاد بود. ۱۵ دقیقه دیگر دوباره امتحان کنید.' : code === 'not_configured' ? 'رمز مدیریت هنوز در Cloudflare تنظیم نشده است.' : 'ورود ممکن نشد؛ دوباره امتحان کنید.';
+});
+
+fetch('/api/admin/me').then((r) => (r.ok ? startApp() : showLogin())).catch(showLogin);
+</script>
+</body>
+</html>

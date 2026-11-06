@@ -3,6 +3,7 @@ import { Phone, MessageCircle, MapPin, Clock, Send, UserCheck, CheckCircle2, Nav
 import { COMPANY_INFO } from '../data/solarData';
 import siteContent from '../../content/site';
 import { MascotCallout } from './MascotCallout';
+import { track } from '../analytics/tracker';
 
 const PROPERTY_TYPES = [
   'ویلای بدون برق (Off-Grid)',
@@ -36,9 +37,11 @@ export const ContactSection: React.FC = () => {
     if (!formData.name.trim() || !phone) return;
     if (!/^(\+98|0098|0)?9\d{9}$/.test(phone)) {
       setPhoneError('شماره همراه معتبر نیست؛ مثال: ۰۹۱۲۱۲۳۴۵۶۷');
+      track('form_error', 'phone');
       return;
     }
     setPhoneError('');
+    track('form_submit', formData.propertyType);
 
     // Generate WhatsApp text & open WhatsApp
     const message = `سلام جناب ${siteContent.about.ceoName} گرامی،
